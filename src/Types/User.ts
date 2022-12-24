@@ -7,4 +7,5 @@ export default interface User {
   isAdmin: boolean;
   myPets: string[];
   savedPets: string[];
+  bio: string;
 }

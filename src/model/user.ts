@@ -1,6 +1,7 @@
 import { AdoptStatus } from "../Types/AdoptStatus";
 import User from "../Types/User";
 import { getPetByIdModel } from "./pet";
+import { UpdatePayload } from "../controller/user";
 
 let USER = {
   email: "example@mail.com",
@@ -11,6 +12,7 @@ let USER = {
   myPets: ["1"],
   savedPets: ["2"],
   isAdmin: false,
+  bio: "this is a biography",
 };
 
 export async function createUserModel(
@@ -29,6 +31,11 @@ export async function loginModel(
   password: string
 ): Promise<User> {
   if (password === "error") throw new Error("terrible error happened");
+  return USER;
+}
+
+export async function updateModel(data: UpdatePayload): Promise<User> {
+  USER = { ...USER, ...data };
   return USER;
 }
 

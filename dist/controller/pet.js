@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.search = exports.getPetByIds = exports.getPetById = void 0;
 const pet_1 = require("../model/pet");
 const getPetById = async (req, res) => {
-    console.log("in getPetById controller");
     const id = req.params.id;
     const pet = await (0, pet_1.getPetByIdModel)(id);
     res.send(pet);

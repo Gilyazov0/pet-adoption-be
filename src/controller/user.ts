@@ -5,6 +5,7 @@ import {
   toggleSaveModel,
   toggleAdoptModel,
   toggleFosterModel,
+  updateModel,
 } from "../model/user";
 
 export const createUser: RequestHandler = async (req, res) => {
@@ -24,6 +25,20 @@ export const createUser: RequestHandler = async (req, res) => {
 export const login: RequestHandler = async (req, res) => {
   const { email, password } = req.query as { email: string; password: string };
   const user = await loginModel(email, password);
+  res.send(user);
+};
+
+export interface UpdatePayload {
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  bio: string;
+  password?: string;
+}
+export const update: RequestHandler = async (req, res) => {
+  const data = req.body as UpdatePayload;
+  const user = await updateModel(data);
   res.send(user);
 };
 

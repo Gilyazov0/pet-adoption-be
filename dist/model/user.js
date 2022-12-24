@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.toggleFosterModel = exports.toggleAdoptModel = exports.toggleSaveModel = exports.loginModel = exports.createUserModel = void 0;
+exports.toggleFosterModel = exports.toggleAdoptModel = exports.toggleSaveModel = exports.updateModel = exports.loginModel = exports.createUserModel = void 0;
 const pet_1 = require("./pet");
 let USER = {
     email: "example@mail.com",
@@ -11,6 +11,7 @@ let USER = {
     myPets: ["1"],
     savedPets: ["2"],
     isAdmin: false,
+    bio: "this is a biography",
 };
 async function createUserModel(firstName, lastName, email, phone, password) {
     if (password === "error")
@@ -24,6 +25,11 @@ async function loginModel(email, password) {
     return USER;
 }
 exports.loginModel = loginModel;
+async function updateModel(data) {
+    USER = { ...USER, ...data };
+    return USER;
+}
+exports.updateModel = updateModel;
 async function toggleSaveModel(userId, petId) {
     const savedPets = USER.savedPets.includes(petId)
         ? USER.savedPets.filter((id) => id !== petId)

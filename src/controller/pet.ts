@@ -2,7 +2,6 @@ import { RequestHandler } from "express";
 import { getPetByIdModel, getPetsByIdsModel, searchModel } from "../model/pet";
 
 export const getPetById: RequestHandler = async (req, res) => {
-  console.log("in getPetById controller");
   const id = req.params.id;
   const pet = await getPetByIdModel(id);
   res.send(pet);

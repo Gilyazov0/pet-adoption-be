@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createUser,
   login,
+  update,
   toggleSave,
   toggleAdopt,
   toggleFoster,
@@ -9,7 +10,7 @@ import {
 
 const router = Router();
 
-router.route("/").post(createUser).get(login);
+router.route("/").post(createUser).get(login).patch(update);
 
 router.post("/toggleSave", toggleSave);
 router.post("/toggleAdopt", toggleAdopt);

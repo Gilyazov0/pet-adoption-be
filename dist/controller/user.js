@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.toggleFoster = exports.toggleAdopt = exports.toggleSave = exports.login = exports.createUser = void 0;
+exports.toggleFoster = exports.toggleAdopt = exports.toggleSave = exports.update = exports.login = exports.createUser = void 0;
 const user_1 = require("../model/user");
 const createUser = async (req, res) => {
     const { firstName, lastName, email, phone, password } = req.body;
@@ -14,6 +14,12 @@ const login = async (req, res) => {
     res.send(user);
 };
 exports.login = login;
+const update = async (req, res) => {
+    const data = req.body;
+    const user = await (0, user_1.updateModel)(data);
+    res.send(user);
+};
+exports.update = update;
 const toggleSave = async (req, res) => {
     const { userId, petId } = req.body;
     const user = await (0, user_1.toggleSaveModel)(userId, petId);
