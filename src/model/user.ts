@@ -43,7 +43,7 @@ export async function toggleSaveModel(userId: string, petId: string) {
 export async function toggleAdoptModel(userId: string, petId: string) {
   const pet = getPetByIdModel(petId);
 
-  if (USER.myPets.includes(petId)) {
+  if (USER.id === pet.adoptedBy) {
     const myPets = USER.myPets.filter((id) => id !== petId);
     USER = { ...USER, myPets };
     pet.adoptedBy = "";
@@ -52,6 +52,7 @@ export async function toggleAdoptModel(userId: string, petId: string) {
     const myPets = [...USER.myPets, petId];
     USER = { ...USER, myPets };
     pet.adoptedBy = USER.id;
+    pet.fosteredBy = "";
     pet.adoptionStatus = "Adopted";
   }
 
@@ -60,7 +61,7 @@ export async function toggleAdoptModel(userId: string, petId: string) {
 export async function toggleFosterModel(userId: string, petId: string) {
   const pet = getPetByIdModel(petId);
 
-  if (USER.myPets.includes(petId)) {
+  if (USER.id === pet.fosteredBy) {
     const myPets = USER.myPets.filter((id) => id !== petId);
     USER = { ...USER, myPets };
     pet.fosteredBy = "";

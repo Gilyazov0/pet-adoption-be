@@ -34,7 +34,7 @@ async function toggleSaveModel(userId, petId) {
 exports.toggleSaveModel = toggleSaveModel;
 async function toggleAdoptModel(userId, petId) {
     const pet = (0, pet_1.getPetByIdModel)(petId);
-    if (USER.myPets.includes(petId)) {
+    if (USER.id === pet.adoptedBy) {
         const myPets = USER.myPets.filter((id) => id !== petId);
         USER = { ...USER, myPets };
         pet.adoptedBy = "";
@@ -44,6 +44,7 @@ async function toggleAdoptModel(userId, petId) {
         const myPets = [...USER.myPets, petId];
         USER = { ...USER, myPets };
         pet.adoptedBy = USER.id;
+        pet.fosteredBy = "";
         pet.adoptionStatus = "Adopted";
     }
     return { ...USER };
@@ -51,7 +52,7 @@ async function toggleAdoptModel(userId, petId) {
 exports.toggleAdoptModel = toggleAdoptModel;
 async function toggleFosterModel(userId, petId) {
     const pet = (0, pet_1.getPetByIdModel)(petId);
-    if (USER.myPets.includes(petId)) {
+    if (USER.id === pet.fosteredBy) {
         const myPets = USER.myPets.filter((id) => id !== petId);
         USER = { ...USER, myPets };
         pet.fosteredBy = "";
