@@ -9,15 +9,7 @@ import {
 } from "../model/user";
 
 export const createUser: RequestHandler = async (req, res) => {
-  const { firstName, lastName, email, phone, password } = req.body;
-
-  const user = await createUserModel(
-    firstName,
-    lastName,
-    email,
-    phone,
-    password
-  );
+  const user = await createUserModel(req.body);
 
   res.send(user);
 };
