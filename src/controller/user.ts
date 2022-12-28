@@ -34,7 +34,11 @@ export const update: RequestHandler = async (req, res) => {
 };
 
 export const toggleSave: RequestHandler = async (req, res) => {
-  const { userId, petId } = req.body as { userId: string; petId: string };
+  const { userId, petId, isSaved } = req.body as {
+    userId: number;
+    petId: number;
+    isSaved: boolean;
+  };
   const user = await toggleSaveModel(userId, petId);
   res.send(user);
 };
