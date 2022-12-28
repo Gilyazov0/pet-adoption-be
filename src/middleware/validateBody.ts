@@ -7,7 +7,6 @@ addFormats(ajv);
 
 export default function validateBody(schema: object): RequestHandler {
   return (req, res, next) => {
-    console.log("validating body");
     const validate = ajv.validate(schema, req.body);
     if (validate) return next();
     console.log("Not valid request body", req.body);

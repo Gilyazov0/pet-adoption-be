@@ -1,5 +1,10 @@
 import { RequestHandler } from "express";
-import { getPetByIdModel, getPetsByIdsModel, searchModel } from "../model/pet";
+import {
+  getPetByIdModel,
+  getPetsByIdsModel,
+  searchModel,
+  addPetModel,
+} from "../model/pet";
 
 export const getPetById: RequestHandler = async (req, res) => {
   const id = req.params.id;
@@ -13,7 +18,10 @@ export const getPetByIds: RequestHandler = async (req, res) => {
   res.send(pets);
 };
 
-export const addPet: RequestHandler = async (req, res) => {};
+export const addPet: RequestHandler = async (req, res) => {
+  console.log("in add pet controller");
+  addPetModel(req.body);
+};
 
 export const search: RequestHandler = async (req, res) => {
   const { name, type, weight, height, status } = req.query as {

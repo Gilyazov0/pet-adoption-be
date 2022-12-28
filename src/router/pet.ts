@@ -7,6 +7,6 @@ const router = Router();
 
 router.get("/ids", getPetByIds);
 router.get("/search", search);
-router.post("/", validateBody(petSchema), addPet);
+router.post("/", addPet);
 
 export default router;

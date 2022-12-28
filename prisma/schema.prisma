@@ -21,22 +21,21 @@ model User {
 }
 
 model Pet {
-  id              Int     @id @default(autoincrement())
-  type            String
-  name            String
-  adoption_status String
-  picture         String
-  height          Float
-  weight          Float
-  color           String
-  dietary         String?
-  bio             String?
-  hypoallergenic  Boolean
-  breed           String?
-  user_id         Int
-  owner           User?   @relation("OwnedPets", fields: [owner_id], references: [id])
-  owner_id        Int?
-  saved_by        User[]  @relation("SavedPets")
+  id             Int     @id @default(autoincrement())
+  type           String
+  name           String
+  adoptionStatus String  @map("adoption_status")
+  picture        String
+  height         Float
+  weight         Float
+  color          String
+  dietary        String?
+  bio            String?
+  hypoallergenic Boolean
+  breed          String?
+  owner          User?   @relation("OwnedPets", fields: [owner_id], references: [id])
+  owner_id       Int?
+  saved_by       User[]  @relation("SavedPets")
 
   @@map("pet")
 }
