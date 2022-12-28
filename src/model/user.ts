@@ -46,38 +46,41 @@ export async function toggleSaveModel(userId: string, petId: string) {
   return { ...USER, savedPets };
 }
 
-export async function toggleAdoptModel(userId: string, petId: string) {
+export async function toggleAdoptModel(userId: string, petId: number) {
+  throw new Error("not implemented yet");
   const pet = getPetByIdModel(petId);
 
-  if (USER.id === pet.adoptedBy) {
-    const myPets = USER.myPets.filter((id) => id !== petId);
-    USER = { ...USER, myPets };
-    pet.adoptedBy = "";
-    pet.adoptionStatus = "Available";
-  } else {
-    const myPets = [...USER.myPets, petId];
-    USER = { ...USER, myPets };
-    pet.adoptedBy = USER.id;
-    pet.fosteredBy = "";
-    pet.adoptionStatus = "Adopted";
-  }
+  // if (USER.id === pet.adoptedBy) {
+  //   const myPets = USER.myPets.filter((id) => id !== petId);
+  //   USER = { ...USER, myPets };
+  //   pet.adoptedBy = "";
+  //   pet.adoptionStatus = "Available";
+  // } else {
+  //   const myPets = [...USER.myPets, petId];
+  //   USER = { ...USER, myPets };
+  //   pet.adoptedBy = USER.id;
+  //   pet.fosteredBy = "";
+  //   pet.adoptionStatus = "Adopted";
+  // }
 
   return { ...USER };
 }
-export async function toggleFosterModel(userId: string, petId: string) {
+export async function toggleFosterModel(userId: string, petId: number) {
+  throw new Error("not implemented yet");
+
   const pet = getPetByIdModel(petId);
 
-  if (USER.id === pet.fosteredBy) {
-    const myPets = USER.myPets.filter((id) => id !== petId);
-    USER = { ...USER, myPets };
-    pet.fosteredBy = "";
-    pet.adoptionStatus = "Available";
-  } else {
-    const myPets = [...USER.myPets, petId];
-    USER = { ...USER, myPets };
-    pet.fosteredBy = USER.id;
-    pet.adoptionStatus = "Fostered";
-  }
+  // if (USER.id === pet.fosteredBy) {
+  //   const myPets = USER.myPets.filter((id) => id !== petId);
+  //   USER = { ...USER, myPets };
+  //   pet.fosteredBy = "";
+  //   pet.adoptionStatus = "Available";
+  // } else {
+  //   const myPets = [...USER.myPets, petId];
+  //   USER = { ...USER, myPets };
+  //   pet.fosteredBy = USER.id;
+  //   pet.adoptionStatus = "Fostered";
+  // }
 
   return { ...USER };
 }

@@ -7,20 +7,22 @@ import {
 } from "../model/pet";
 
 export const getPetById: RequestHandler = async (req, res) => {
-  const id = req.params.id;
+  const id = Number(req.params.id);
   const pet = await getPetByIdModel(id);
   res.send(pet);
 };
 
 export const getPetByIds: RequestHandler = async (req, res) => {
-  const ids = (req.query as { ids: string[] }).ids;
+  const params = (req.query as { ids: string }).ids;
+  const ids = JSON.parse(params).map((id: any) => Number(id));
+
   const pets = await getPetsByIdsModel(ids);
   res.send(pets);
 };
 
 export const addPet: RequestHandler = async (req, res) => {
-  console.log("in add pet controller");
-  addPetModel(req.body);
+  const pet = await addPetModel(req.body);
+  if (pet) res.send(pet);
 };
 
 export const search: RequestHandler = async (req, res) => {
