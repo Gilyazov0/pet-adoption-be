@@ -26,17 +26,18 @@ export async function getPetsByIdsModel(ids: number[]) {
 export async function searchModel(
   name?: string,
   type?: string,
-  weight?: string,
-  height?: string,
+  weight?: number,
+  height?: number,
   status?: string
 ) {
-  throw new Error("not implemented yet");
-  // return pets.filter((x) => {
-  //   if (name && x.name != name) return false;
-  //   if (type && x.type != type) return false;
-  //   if (weight && x.weight !== Number(weight)) return false;
-  //   if (height && x.height !== Number(height)) return false;
-  //   if (status && x.adoptionStatus != status) return false;
-  //   return true;
-  // });
+  const pets = await prisma.pet.findMany({
+    where: {
+      name,
+      type,
+      weight: weight ? weight : undefined,
+      height: height ? height : undefined,
+      adoptionStatus: status,
+    },
+  });
+  return pets;
 }

@@ -26,13 +26,19 @@ export const addPet: RequestHandler = async (req, res) => {
 };
 
 export const search: RequestHandler = async (req, res) => {
-  const { name, type, weight, height, status } = req.query as {
+  const { name, type, weight, height, adoption_status } = req.query as {
     name?: string;
     type?: string;
     weight?: string;
     height?: string;
-    status?: string;
+    adoption_status?: string;
   };
-  const pets = await searchModel(name, type, weight, height, status);
+  const pets = await searchModel(
+    name,
+    type,
+    Number(weight),
+    Number(height),
+    adoption_status
+  );
   res.send(pets);
 };
