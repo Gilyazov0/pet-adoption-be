@@ -23,7 +23,8 @@
         "bio": "",
         "hypoallergnic": true,
         "dietary": [],
-        "breed": "Domestic Shorthair Mix"
+        "breed": "Domestic Shorthair Mix",
+        "adoptedBy": "someId"
     },
     {
         "type": "Cat",

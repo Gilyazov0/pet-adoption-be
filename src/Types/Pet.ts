@@ -11,7 +11,7 @@ export default interface Pet {
   color: string;
   bio: string;
   hypoallergnic: boolean;
-  dietary: string[];
+  dietary: string;
   breed: string;
   id: string;
   adoptedBy?: string;

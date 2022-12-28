@@ -73,3 +73,4 @@ async function toggleFosterModel(userId, petId) {
     return { ...USER };
 }
 exports.toggleFosterModel = toggleFosterModel;
+//# sourceMappingURL=user.js.map

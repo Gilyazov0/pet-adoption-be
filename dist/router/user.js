@@ -8,3 +8,4 @@ router.post("/toggleSave", user_1.toggleSave);
 router.post("/toggleAdopt", user_1.toggleAdopt);
 router.post("/toggleFoster", user_1.toggleFoster);
 exports.default = router;
+//# sourceMappingURL=user.js.map

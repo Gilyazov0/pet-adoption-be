@@ -1,8 +1,12 @@
 import { Router } from "express";
-import { getPetById, getPetByIds, search } from "../controller/pet";
+import { getPetByIds, search, addPet } from "../controller/pet";
+import validateBody from "../middleware/validateBody";
+import petSchema from "../Schemas/petSchema";
+
 const router = Router();
 
 router.get("/ids", getPetByIds);
 router.get("/search", search);
+router.post("/", validateBody(petSchema), addPet);
 
 export default router;

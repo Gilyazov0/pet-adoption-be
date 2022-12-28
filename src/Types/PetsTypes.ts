@@ -1,5 +1,1 @@
-export enum PetType {
-  "Dog",
-  "Cat",
-  "Other",
-}
+export type PetType = "Dog" | "Cat" | "Other";

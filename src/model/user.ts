@@ -1,4 +1,3 @@
-import { AdoptStatus } from "../Types/AdoptStatus";
 import User from "../Types/User";
 import { getPetByIdModel } from "./pet";
 import { UpdatePayload } from "../controller/user";
@@ -14,6 +13,10 @@ let USER = {
   isAdmin: false,
   bio: "this is a biography",
 };
+
+export async function getUserByEmail(email: string) {
+  return USER.email === email ? USER : null;
+}
 
 export async function createUserModel(
   firstName: string,

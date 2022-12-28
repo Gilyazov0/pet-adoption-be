@@ -13,6 +13,8 @@ export const getPetByIds: RequestHandler = async (req, res) => {
   res.send(pets);
 };
 
+export const addPet: RequestHandler = async (req, res) => {};
+
 export const search: RequestHandler = async (req, res) => {
   const { name, type, weight, height, status } = req.query as {
     name?: string;

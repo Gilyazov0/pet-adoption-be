@@ -7,10 +7,16 @@ import {
   toggleAdopt,
   toggleFoster,
 } from "../controller/user";
+import validateBody from "../middleware/validateBody";
+import userSchema from "../Schemas/userSchema";
 
 const router = Router();
 
-router.route("/").post(createUser).get(login).patch(update);
+router
+  .route("/")
+  .post(validateBody(userSchema), createUser)
+  .get(login)
+  .patch(update); // add validateBody dude
 
 router.post("/toggleSave", toggleSave);
 router.post("/toggleAdopt", toggleAdopt);

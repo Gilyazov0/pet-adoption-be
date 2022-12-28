@@ -10,6 +10,7 @@ const pet_1 = __importDefault(require("./router/pet"));
 const user_1 = __importDefault(require("./router/user"));
 const port = process.env.PORT || 8080;
 const app = (0, express_1.default)();
+throw new Error("this is an error");
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use("/pet/", pet_1.default);
@@ -17,3 +18,4 @@ app.use("/user/", user_1.default);
 app.listen(port, () => {
     console.log(`Server started. Listening to the post ${port}`);
 });
+//# sourceMappingURL=server.js.map

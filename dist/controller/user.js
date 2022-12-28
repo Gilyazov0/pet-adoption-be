@@ -38,3 +38,4 @@ const toggleFoster = async (req, res) => {
     res.send(user);
 };
 exports.toggleFoster = toggleFoster;
+//# sourceMappingURL=user.js.map
