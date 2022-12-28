@@ -1,6 +1,9 @@
 import User from "../Types/User";
 import { getPetByIdModel } from "./pet";
 import { UpdatePayload } from "../controller/user";
+import { PrismaClient, Prisma } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 let USER = {
   email: "example@mail.com",
@@ -15,29 +18,22 @@ let USER = {
 };
 
 export async function getUserByEmail(email: string) {
-  return USER.email === email ? USER : null;
+  return await prisma.user.findFirst({ where: { email } });
 }
 
-export async function createUserModel(
-  firstName: string,
-  lastName: string,
-  email: string,
-  phone: string,
-  password: string
-): Promise<User> {
-  if (password === "error") throw new Error("terrible error happened");
-  return USER;
+export async function createUserModel(user: Prisma.UserCreateInput) {
+  const result = await prisma.user.create({ data: user });
+  return result;
 }
 
-export async function loginModel(
-  email: string,
-  password: string
-): Promise<User> {
-  if (password === "error") throw new Error("terrible error happened");
-  return USER;
+export async function loginModel(email: string, password: string) {
+  const user = await getUserByEmail(email);
+  if (user) return user;
+  else throw new Error("Authorization denied");
 }
 
 export async function updateModel(data: UpdatePayload): Promise<User> {
+  throw new Error("Not implemented yet");
   USER = { ...USER, ...data };
   return USER;
 }

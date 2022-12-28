@@ -14,7 +14,7 @@ const router = Router();
 
 router
   .route("/")
-  .post(validateBody(userSchema), createUser)
+  .post(/*validateBody(userSchema),*/ createUser)
   .get(login)
   .patch(update); // add validateBody dude
 
@@ -23,3 +23,5 @@ router.post("/toggleAdopt", toggleAdopt);
 router.post("/toggleFoster", toggleFoster);
 
 export default router;
+
+JSON.stringify;

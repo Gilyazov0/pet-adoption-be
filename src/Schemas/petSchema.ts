@@ -8,7 +8,7 @@ const petSchema = {
     weight: "number",
     color: "string",
     bio: "string",
-    hypoallergnic: "boolean",
+    hypoallergenic: "boolean",
     dietary: "string",
     breed: "string",
   },

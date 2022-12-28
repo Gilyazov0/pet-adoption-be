@@ -10,7 +10,6 @@ import {
 
 export const createUser: RequestHandler = async (req, res) => {
   const user = await createUserModel(req.body);
-
   res.send(user);
 };
 
