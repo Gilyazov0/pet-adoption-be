@@ -44,13 +44,13 @@ export const toggleSave: RequestHandler = async (req, res) => {
 };
 
 export const toggleAdopt: RequestHandler = async (req, res) => {
-  const { userId, petId } = req.body as { userId: string; petId: number };
+  const { userId, petId } = req.body as { userId: number; petId: number };
   const user = await toggleAdoptModel(userId, petId);
   res.send(user);
 };
 
 export const toggleFoster: RequestHandler = async (req, res) => {
-  const { userId, petId } = req.body as { userId: string; petId: number };
+  const { userId, petId } = req.body as { userId: number; petId: number };
   const user = await toggleFosterModel(userId, petId);
   res.send(user);
 };

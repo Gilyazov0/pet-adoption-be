@@ -14,7 +14,7 @@ export async function getUserByEmail(email: string) {
 export async function getUserById(id: number) {
   return await prisma.user.findFirst({
     where: { id },
-    include: { saved_pets: true },
+    include: { saved_pets: true, pets: true },
   });
 }
 
@@ -33,7 +33,7 @@ export async function updateModel(data: UpdatePayload) {
   throw new Error("Not implemented yet");
 }
 
-export async function toggleSaveModel(userId: number, petId: number) {
+async function getPetAndUserById(userId: number, petId: number) {
   const [user, pet] = await Promise.all([
     getUserById(userId),
     getPetByIdModel(petId),
@@ -41,6 +41,12 @@ export async function toggleSaveModel(userId: number, petId: number) {
 
   if (!user) throw new Error("Wrong user id");
   if (!pet) throw new Error("Wrong pet id");
+
+  return { pet, user };
+}
+
+export async function toggleSaveModel(userId: number, petId: number) {
+  const { pet, user } = await getPetAndUserById(userId, petId);
 
   const saved_pets =
     user.saved_pets.findIndex((pet) => pet.id === petId) === -1
@@ -59,10 +65,45 @@ export async function toggleSaveModel(userId: number, petId: number) {
   return { ...user, saved_pets };
 }
 
-export async function toggleAdoptModel(userId: string, petId: number) {
-  throw new Error("not implemented yet");
-  const pet = getPetByIdModel(petId);
+// export async function toggleOwner(
+//   userId: number,
+//   petId: number,
+//   isAdopting: boolean
+// ) {
+//   const { pet, user } = await getPetAndUserById(userId, petId);
 
+//   if (pet.owner_id && pet.owner_id !== user.id)
+//     throw new Error("Pet have another owner");
+//   if (!isAdopting && pet.adoptionStatus !== "Adopted")
+
+//   throw new Error("Wrong pet status");
+// const data = pet.owner_id
+//   ? { owner_id: null, adoptionStatus: "Available" }
+//   : { owner_id: userId, adoptionStatus: "Adopted" };
+
+// }
+
+export async function toggleAdoptModel(userId: number, petId: number) {
+  let { pet, user } = await getPetAndUserById(userId, petId);
+
+  if (pet.owner_id && pet.owner_id !== user.id)
+    throw new Error("Pet have another owner");
+
+  const data =
+    pet.adoptionStatus === "Adopted"
+      ? { owner_id: null, adoptionStatus: "Available" }
+      : { owner_id: userId, adoptionStatus: "Adopted" };
+
+  pet = await prisma.pet.update({
+    where: { id: petId },
+    data: { ...data },
+  });
+
+  const pets = pet.owner_id
+    ? [...user.pets, pet]
+    : user.pets.filter((pet) => pet.id !== petId);
+
+  return { user, pets };
   // if (USER.id === pet.adoptedBy) {
   //   const myPets = USER.myPets.filter((id) => id !== petId);
   //   USER = { ...USER, myPets };
@@ -75,25 +116,29 @@ export async function toggleAdoptModel(userId: string, petId: number) {
   //   pet.fosteredBy = "";
   //   pet.adoptionStatus = "Adopted";
   // }
-
   //return { ...USER };
 }
-export async function toggleFosterModel(userId: string, petId: number) {
-  throw new Error("not implemented yet");
+export async function toggleFosterModel(userId: number, petId: number) {
+  let { pet, user } = await getPetAndUserById(userId, petId);
 
-  const pet = getPetByIdModel(petId);
+  if (pet.owner_id && pet.owner_id !== user.id)
+    throw new Error("Pet have another owner");
 
-  // if (USER.id === pet.fosteredBy) {
-  //   const myPets = USER.myPets.filter((id) => id !== petId);
-  //   USER = { ...USER, myPets };
-  //   pet.fosteredBy = "";
-  //   pet.adoptionStatus = "Available";
-  // } else {
-  //   const myPets = [...USER.myPets, petId];
-  //   USER = { ...USER, myPets };
-  //   pet.fosteredBy = USER.id;
-  //   pet.adoptionStatus = "Fostered";
-  // }
+  if (pet.adoptionStatus === "Adopted")
+    throw new Error("Wrong pet adoption status");
 
-  // return { ...USER };
+  const data =
+    pet.adoptionStatus === "Fostered"
+      ? { owner_id: null, adoptionStatus: "Available" }
+      : { owner_id: userId, adoptionStatus: "Fostered" };
+
+  const newPet = await prisma.pet.update({
+    where: { id: petId },
+    data: { ...data },
+  });
+
+  const pets = newPet.owner_id
+    ? [...user.pets, pet]
+    : user.pets.filter((pet) => pet.id !== petId);
+  return { user, pets };
 }
