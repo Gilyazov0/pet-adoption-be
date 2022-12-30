@@ -13,7 +13,6 @@ interface AppErrorArgs {
   description: string;
   isOperational?: boolean;
 }
-
 export class AppError extends Error {
   public readonly name: string;
   public readonly httpCode: HttpCode;
@@ -22,7 +21,7 @@ export class AppError extends Error {
   constructor(args: AppErrorArgs) {
     super(args.description);
 
-    Object.setPrototypeOf(this, new.target.prototype);
+    // Object.setPrototypeOf(this, new.target.prototype);
 
     this.name = args.name || "Error";
     this.httpCode = args.httpCode;

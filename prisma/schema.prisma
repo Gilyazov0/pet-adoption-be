@@ -9,11 +9,12 @@ datasource db {
 
 model User {
   id         Int     @id @default(autoincrement())
-  first_name String
-  last_name  String
+  firstName  String  @map("first_name")
+  lastName   String  @map("last_name")
   email      String  @unique
+  phone      String
   password   String
-  is_admin   Boolean @default(false)
+  isAdmin    Boolean @default(false) @map("is_admin")
   pets       Pet[]   @relation("OwnedPets")
   saved_pets Pet[]   @relation("SavedPets")
 
@@ -33,9 +34,9 @@ model Pet {
   bio            String?
   hypoallergenic Boolean
   breed          String?
-  owner          User?   @relation("OwnedPets", fields: [owner_id], references: [id])
-  owner_id       Int?
+  owner          User?   @relation("OwnedPets", fields: [ownerId], references: [id])
+  ownerId        Int?    @map("owner_id")
   saved_by       User[]  @relation("SavedPets")
 
-  @@map("pet")
+  @@map("pets")
 }

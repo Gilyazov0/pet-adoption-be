@@ -85,34 +85,34 @@ export async function toggleSaveModel(userId: number, petId: number) {
 // ) {
 //   const { pet, user } = await getPetAndUserById(userId, petId);
 
-//   if (pet.owner_id && pet.owner_id !== user.id)
+//   if (pet.ownerId && pet.ownerId !== user.id)
 //     throw new Error("Pet have another owner");
 //   if (!isAdopting && pet.adoptionStatus !== "Adopted")
 
 //   throw new Error("Wrong pet status");
-// const data = pet.owner_id
-//   ? { owner_id: null, adoptionStatus: "Available" }
-//   : { owner_id: userId, adoptionStatus: "Adopted" };
+// const data = pet.ownerId
+//   ? { ownerId: null, adoptionStatus: "Available" }
+//   : { ownerId: userId, adoptionStatus: "Adopted" };
 
 // }
 
 export async function toggleAdoptModel(userId: number, petId: number) {
   let { pet, user } = await getPetAndUserById(userId, petId);
 
-  if (pet.owner_id && pet.owner_id !== user.id)
+  if (pet.ownerId && pet.ownerId !== user.id)
     throw new Error("Pet have another owner");
 
   const data =
     pet.adoptionStatus === "Adopted"
-      ? { owner_id: null, adoptionStatus: "Available" }
-      : { owner_id: userId, adoptionStatus: "Adopted" };
+      ? { ownerId: null, adoptionStatus: "Available" }
+      : { ownerId: userId, adoptionStatus: "Adopted" };
 
   pet = await prisma.pet.update({
     where: { id: petId },
     data: { ...data },
   });
 
-  const pets = pet.owner_id
+  const pets = pet.ownerId
     ? [...user.pets, pet]
     : user.pets.filter((pet) => pet.id !== petId);
 
@@ -134,7 +134,7 @@ export async function toggleAdoptModel(userId: number, petId: number) {
 export async function toggleFosterModel(userId: number, petId: number) {
   let { pet, user } = await getPetAndUserById(userId, petId);
 
-  if (pet.owner_id && pet.owner_id !== user.id)
+  if (pet.ownerId && pet.ownerId !== user.id)
     throw new Error("Pet have another owner");
 
   if (pet.adoptionStatus === "Adopted")
@@ -142,15 +142,15 @@ export async function toggleFosterModel(userId: number, petId: number) {
 
   const data =
     pet.adoptionStatus === "Fostered"
-      ? { owner_id: null, adoptionStatus: "Available" }
-      : { owner_id: userId, adoptionStatus: "Fostered" };
+      ? { ownerId: null, adoptionStatus: "Available" }
+      : { ownerId: userId, adoptionStatus: "Fostered" };
 
   const newPet = await prisma.pet.update({
     where: { id: petId },
     data: { ...data },
   });
 
-  const pets = newPet.owner_id
+  const pets = newPet.ownerId
     ? [...user.pets, pet]
     : user.pets.filter((pet) => pet.id !== petId);
   return { user, pets };

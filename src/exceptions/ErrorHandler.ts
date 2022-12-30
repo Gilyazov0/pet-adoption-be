@@ -33,7 +33,7 @@ class ErrorHandler {
     }
 
     console.log("Application encountered a critical error. Exiting");
-    // process.exit(1);
+    process.exit(1);
   }
 }
 
