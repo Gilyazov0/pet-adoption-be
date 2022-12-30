@@ -1,6 +1,7 @@
 import { getPetByIdModel } from "./pet";
 import { UpdatePayload } from "../controller/user";
 import { PrismaClient, Prisma } from "@prisma/client";
+import { AppError, HttpCode } from "../exceptions/AppError";
 
 const prisma = new PrismaClient();
 
@@ -25,8 +26,12 @@ export async function createUserModel(user: Prisma.UserCreateInput) {
 
 export async function loginModel(email: string, password: string) {
   const user = await getUserByEmail(email);
-  if (user) return user;
-  else throw new Error("Authorization denied");
+  if (user && password === user.password) return user;
+  else
+    throw new AppError({
+      description: "Authorization denied",
+      httpCode: HttpCode.UNAUTHORIZED,
+    });
 }
 
 export async function updateModel(data: UpdatePayload) {
@@ -39,8 +44,16 @@ async function getPetAndUserById(userId: number, petId: number) {
     getPetByIdModel(petId),
   ]);
 
-  if (!user) throw new Error("Wrong user id");
-  if (!pet) throw new Error("Wrong pet id");
+  if (!user)
+    throw new AppError({
+      description: "Wrong user id",
+      httpCode: HttpCode.BAD_REQUEST,
+    });
+  if (!pet)
+    throw new AppError({
+      description: "Wrong pet id",
+      httpCode: HttpCode.BAD_REQUEST,
+    });
 
   return { pet, user };
 }
