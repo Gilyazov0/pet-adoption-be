@@ -1,6 +1,6 @@
 import { getPetByIdModel } from "./pet";
 import { UpdatePayload } from "../controller/user";
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient, Prisma, AdoptStatus } from "@prisma/client";
 import { AppError, HttpCode } from "../exceptions/AppError";
 
 const prisma = new PrismaClient();
@@ -103,9 +103,9 @@ export async function toggleAdoptModel(userId: number, petId: number) {
     throw new Error("Pet have another owner");
 
   const data =
-    pet.adoptionStatus === "Adopted"
-      ? { ownerId: null, adoptionStatus: "Available" }
-      : { ownerId: userId, adoptionStatus: "Adopted" };
+    pet.adoptionStatus === AdoptStatus.Adopted
+      ? { ownerId: null, adoptionStatus: AdoptStatus.Available }
+      : { ownerId: userId, adoptionStatus: AdoptStatus.Adopted };
 
   pet = await prisma.pet.update({
     where: { id: petId },
@@ -135,15 +135,21 @@ export async function toggleFosterModel(userId: number, petId: number) {
   let { pet, user } = await getPetAndUserById(userId, petId);
 
   if (pet.ownerId && pet.ownerId !== user.id)
-    throw new Error("Pet have another owner");
+    throw new AppError({
+      description: "Pet have another owner",
+      httpCode: HttpCode.BAD_REQUEST,
+    });
 
-  if (pet.adoptionStatus === "Adopted")
-    throw new Error("Wrong pet adoption status");
+  if (pet.adoptionStatus === AdoptStatus.Adopted)
+    throw new AppError({
+      description: "Wrong pet adoption status",
+      httpCode: HttpCode.BAD_REQUEST,
+    });
 
   const data =
-    pet.adoptionStatus === "Fostered"
-      ? { ownerId: null, adoptionStatus: "Available" }
-      : { ownerId: userId, adoptionStatus: "Fostered" };
+    pet.adoptionStatus === AdoptStatus.Fostered
+      ? { ownerId: null, adoptionStatus: AdoptStatus.Available }
+      : { ownerId: userId, adoptionStatus: AdoptStatus.Fostered };
 
   const newPet = await prisma.pet.update({
     where: { id: petId },

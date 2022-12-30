@@ -22,10 +22,10 @@ model User {
 }
 
 model Pet {
-  id             Int     @id @default(autoincrement())
-  type           String
+  id             Int         @id @default(autoincrement())
+  type           PetType
   name           String
-  adoptionStatus String  @map("adoption_status")
+  adoptionStatus AdoptStatus @map("adoption_status")
   picture        String
   height         Float
   weight         Float
@@ -34,9 +34,21 @@ model Pet {
   bio            String?
   hypoallergenic Boolean
   breed          String?
-  owner          User?   @relation("OwnedPets", fields: [ownerId], references: [id])
-  ownerId        Int?    @map("owner_id")
-  saved_by       User[]  @relation("SavedPets")
+  owner          User?       @relation("OwnedPets", fields: [ownerId], references: [id])
+  ownerId        Int?        @map("owner_id")
+  saved_by       User[]      @relation("SavedPets")
 
   @@map("pets")
+}
+
+enum PetType {
+  Dog
+  Cat
+  Other
+}
+
+enum AdoptStatus {
+  Adopted
+  Available
+  Fostered
 }

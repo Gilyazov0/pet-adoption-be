@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient, Prisma, AdoptStatus, PetType } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -19,10 +19,10 @@ export async function getPetsByIdsModel(ids: number[]) {
 
 export async function searchModel(
   name?: string,
-  type?: string,
+  type?: PetType,
   weight?: number,
   height?: number,
-  status?: string
+  status?: AdoptStatus
 ) {
   const pets = await prisma.pet.findMany({
     where: {

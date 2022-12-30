@@ -1,4 +1,5 @@
 import { RequestHandler } from "express";
+import { PetType, AdoptStatus } from "@prisma/client";
 import {
   getPetByIdModel,
   getPetsByIdsModel,
@@ -28,10 +29,10 @@ export const addPet: RequestHandler = async (req, res) => {
 export const search: RequestHandler = async (req, res) => {
   const { name, type, weight, height, adoption_status } = req.query as {
     name?: string;
-    type?: string;
+    type?: PetType;
     weight?: string;
     height?: string;
-    adoption_status?: string;
+    adoption_status?: AdoptStatus;
   };
   const pets = await searchModel(
     name,
