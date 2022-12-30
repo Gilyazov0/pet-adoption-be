@@ -1,4 +1,3 @@
-import { search } from "../controller/pet";
 import {
   PrismaClient,
   Prisma,
@@ -6,10 +5,11 @@ import {
   PetType,
   Pet,
 } from "@prisma/client";
+import { search } from "../controller/pet";
 
 const prisma = new PrismaClient();
 
-export async function addPetModel(pet: Prisma.PetCreateInput): Promise<Pet> {
+export async function addPetModel(pet: Prisma.PetCreateInput) {
   const result = await prisma.pet.create({ data: pet });
   return result;
 }
@@ -33,7 +33,7 @@ export async function searchModel(
 ) {
   const pets = await prisma.pet.findMany({
     where: {
-      name: { search: name },
+      name: { search: `${name}*` },
       type,
       weight: weight ? weight : undefined,
       height: height ? height : undefined,

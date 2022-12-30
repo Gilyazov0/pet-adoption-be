@@ -1,4 +1,5 @@
 import "./process";
+import "express-async-errors";
 import express, { Request } from "express";
 import "dotenv/config";
 import cors from "cors";

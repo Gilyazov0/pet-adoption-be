@@ -39,6 +39,7 @@ model Pet {
   ownerId        Int?        @map("owner_id")
   saved_by       User[]      @relation("SavedPets")
 
+  @@fulltext([name])
   @@map("pets")
 }
 
