@@ -7,7 +7,7 @@ const ajv = new Ajv();
 addFormats(ajv);
 
 export default function validateBody(schema: object): RequestHandler {
-  return (req, res, next) => {
+  return (req, _, next) => {
     const validate = ajv.validate(schema, req.body);
     if (validate) return next();
 

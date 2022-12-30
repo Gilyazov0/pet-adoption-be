@@ -8,14 +8,14 @@ const prisma = new PrismaClient();
 export async function getUserByEmail(email: string) {
   return await prisma.user.findFirst({
     where: { email },
-    include: { saved_pets: true, pets: true },
+    include: { savedPets: true, pets: true },
   });
 }
 
 export async function getUserById(id: number) {
   return await prisma.user.findFirst({
     where: { id },
-    include: { saved_pets: true, pets: true },
+    include: { savedPets: true, pets: true },
   });
 }
 
@@ -62,16 +62,16 @@ export async function toggleSaveModel(userId: number, petId: number) {
   const { pet, user } = await getPetAndUserById(userId, petId);
 
   const saved_pets =
-    user.saved_pets.findIndex((pet) => pet.id === petId) === -1
-      ? [...user.saved_pets, pet]
-      : user.saved_pets.filter((pet) => pet.id !== petId);
+    user.savedPets.findIndex((pet) => pet.id === petId) === -1
+      ? [...user.savedPets, pet]
+      : user.savedPets.filter((pet) => pet.id !== petId);
 
   const ids = saved_pets.map((pet) => ({ id: pet.id }));
 
   await prisma.user.update({
     where: { id: userId },
     data: {
-      saved_pets: { set: ids },
+      savedPets: { set: ids },
     },
   });
 
