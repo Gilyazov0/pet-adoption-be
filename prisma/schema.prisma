@@ -8,15 +8,15 @@ datasource db {
 }
 
 model User {
-  id         Int     @id @default(autoincrement())
-  firstName  String  @map("first_name")
-  lastName   String  @map("last_name")
-  email      String  @unique
-  phone      String
-  password   String
-  isAdmin    Boolean @default(false) @map("is_admin")
-  pets       Pet[]   @relation("OwnedPets")
-  saved_pets Pet[]   @relation("SavedPets")
+  id        Int     @id @default(autoincrement())
+  firstName String  @map("first_name")
+  lastName  String  @map("last_name")
+  email     String  @unique
+  phone     String
+  password  String
+  isAdmin   Boolean @default(false) @map("is_admin")
+  pets      Pet[]   @relation("OwnedPets")
+  savedPets Pet[]   @relation("SavedPets")
 
   @@map("users")
 }

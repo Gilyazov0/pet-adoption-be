@@ -78,24 +78,6 @@ export async function toggleSaveModel(userId: number, petId: number) {
   return { ...user, saved_pets };
 }
 
-// export async function toggleOwner(
-//   userId: number,
-//   petId: number,
-//   isAdopting: boolean
-// ) {
-//   const { pet, user } = await getPetAndUserById(userId, petId);
-
-//   if (pet.ownerId && pet.ownerId !== user.id)
-//     throw new Error("Pet have another owner");
-//   if (!isAdopting && pet.adoptionStatus !== "Adopted")
-
-//   throw new Error("Wrong pet status");
-// const data = pet.ownerId
-//   ? { ownerId: null, adoptionStatus: "Available" }
-//   : { ownerId: userId, adoptionStatus: "Adopted" };
-
-// }
-
 export async function toggleAdoptModel(userId: number, petId: number) {
   let { pet, user } = await getPetAndUserById(userId, petId);
 
@@ -117,20 +99,8 @@ export async function toggleAdoptModel(userId: number, petId: number) {
     : user.pets.filter((pet) => pet.id !== petId);
 
   return { user, pets };
-  // if (USER.id === pet.adoptedBy) {
-  //   const myPets = USER.myPets.filter((id) => id !== petId);
-  //   USER = { ...USER, myPets };
-  //   pet.adoptedBy = "";
-  //   pet.adoptionStatus = "Available";
-  // } else {
-  //   const myPets = [...USER.myPets, petId];
-  //   USER = { ...USER, myPets };
-  //   pet.adoptedBy = USER.id;
-  //   pet.fosteredBy = "";
-  //   pet.adoptionStatus = "Adopted";
-  // }
-  //return { ...USER };
 }
+
 export async function toggleFosterModel(userId: number, petId: number) {
   let { pet, user } = await getPetAndUserById(userId, petId);
 
