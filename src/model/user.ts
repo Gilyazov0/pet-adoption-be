@@ -1,30 +1,43 @@
 import { getPetByIdModel } from "./pet";
 import { UpdatePayload } from "../controller/user";
-import { PrismaClient, Prisma, AdoptStatus } from "@prisma/client";
+import { PrismaClient, Prisma, AdoptStatus, User, Pet } from "@prisma/client";
 import { AppError, HttpCode } from "../exceptions/AppError";
 
 const prisma = new PrismaClient();
 
-export async function getUserByEmail(email: string) {
+type UserReturnType = Promise<
+  | (User & {
+      savedPets: Pet[];
+      pets: Pet[];
+    })
+  | null
+>;
+
+export async function getUserByEmail(email: string): UserReturnType {
   return await prisma.user.findFirst({
     where: { email },
     include: { savedPets: true, pets: true },
   });
 }
 
-export async function getUserById(id: number) {
+export async function getUserById(id: number): UserReturnType {
   return await prisma.user.findFirst({
     where: { id },
     include: { savedPets: true, pets: true },
   });
 }
 
-export async function createUserModel(user: Prisma.UserCreateInput) {
+export async function createUserModel(
+  user: Prisma.UserCreateInput
+): UserReturnType {
   const result = await prisma.user.create({ data: user });
-  return result;
+  return { ...result, savedPets: [], pets: [] };
 }
 
-export async function loginModel(email: string, password: string) {
+export async function loginModel(
+  email: string,
+  password: string
+): UserReturnType {
   const user = await getUserByEmail(email);
   if (user && password === user.password) return user;
   else
@@ -34,7 +47,7 @@ export async function loginModel(email: string, password: string) {
     });
 }
 
-export async function updateModel(data: UpdatePayload) {
+export async function updateModel(data: UpdatePayload): UserReturnType {
   throw new Error("Not implemented yet");
 }
 
@@ -58,15 +71,18 @@ async function getPetAndUserById(userId: number, petId: number) {
   return { pet, user };
 }
 
-export async function toggleSaveModel(userId: number, petId: number) {
+export async function toggleSaveModel(
+  userId: number,
+  petId: number
+): UserReturnType {
   const { pet, user } = await getPetAndUserById(userId, petId);
 
-  const saved_pets =
+  const savedPets =
     user.savedPets.findIndex((pet) => pet.id === petId) === -1
       ? [...user.savedPets, pet]
       : user.savedPets.filter((pet) => pet.id !== petId);
 
-  const ids = saved_pets.map((pet) => ({ id: pet.id }));
+  const ids = savedPets.map((pet) => ({ id: pet.id }));
 
   await prisma.user.update({
     where: { id: userId },
@@ -75,10 +91,13 @@ export async function toggleSaveModel(userId: number, petId: number) {
     },
   });
 
-  return { ...user, saved_pets };
+  return { ...user, savedPets };
 }
 
-export async function toggleAdoptModel(userId: number, petId: number) {
+export async function toggleAdoptModel(
+  userId: number,
+  petId: number
+): UserReturnType {
   let { pet, user } = await getPetAndUserById(userId, petId);
 
   if (pet.ownerId && pet.ownerId !== user.id)
@@ -98,10 +117,13 @@ export async function toggleAdoptModel(userId: number, petId: number) {
     ? [...user.pets, pet]
     : user.pets.filter((pet) => pet.id !== petId);
 
-  return { user, pets };
+  return { ...user, pets };
 }
 
-export async function toggleFosterModel(userId: number, petId: number) {
+export async function toggleFosterModel(
+  userId: number,
+  petId: number
+): UserReturnType {
   let { pet, user } = await getPetAndUserById(userId, petId);
 
   if (pet.ownerId && pet.ownerId !== user.id)
@@ -129,5 +151,5 @@ export async function toggleFosterModel(userId: number, petId: number) {
   const pets = newPet.ownerId
     ? [...user.pets, pet]
     : user.pets.filter((pet) => pet.id !== petId);
-  return { user, pets };
+  return { ...user, pets };
 }
