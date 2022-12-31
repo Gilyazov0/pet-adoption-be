@@ -6,6 +6,7 @@ import {
   Pet,
 } from "@prisma/client";
 import { search } from "../controller/pet";
+import SearchParams from "../Types/searchParams";
 
 const prisma = new PrismaClient();
 
@@ -24,13 +25,9 @@ export async function getPetsByIdsModel(ids: number[]): Promise<Pet[]> {
   return pets;
 }
 
-export async function searchModel(
-  name: string = "",
-  type?: PetType,
-  weight?: number,
-  height?: number,
-  status?: AdoptStatus
-) {
+export async function searchModel(params: SearchParams) {
+  const { name, type, weight, height, status } = { ...params };
+
   if (name)
     return await prisma.pet.findMany({
       where: {
