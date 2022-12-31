@@ -8,13 +8,15 @@ import {
 } from "../model/pet";
 
 export const getPetById: RequestHandler = async (req, res) => {
-  const id = Number(req.params.id);
+  const id = Number(req.query.id);
+
   const pet = await getPetByIdModel(id);
   res.send(pet);
 };
 
 export const getPetByIds: RequestHandler = async (req, res) => {
   const params = (req.query as { ids: string }).ids;
+
   const ids = JSON.parse(params).map((id: any) => Number(id));
 
   const pets = await getPetsByIdsModel(ids);

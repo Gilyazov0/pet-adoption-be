@@ -31,14 +31,23 @@ export async function searchModel(
   height?: number,
   status?: AdoptStatus
 ) {
-  const pets = await prisma.pet.findMany({
-    where: {
-      name: { search: `${name}*` },
-      type,
-      weight: weight ? weight : undefined,
-      height: height ? height : undefined,
-      adoptionStatus: status,
-    },
-  });
-  return pets;
+  if (name)
+    return await prisma.pet.findMany({
+      where: {
+        name: { search: `${name}*` },
+        type,
+        weight: weight ? weight : undefined,
+        height: height ? height : undefined,
+        adoptionStatus: status,
+      },
+    });
+  else
+    return await prisma.pet.findMany({
+      where: {
+        type,
+        weight: weight ? weight : undefined,
+        height: height ? height : undefined,
+        adoptionStatus: status,
+      },
+    });
 }
