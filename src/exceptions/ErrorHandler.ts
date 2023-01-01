@@ -8,6 +8,7 @@ import { AppError, HttpCode } from "./AppError";
 class ErrorHandler {
   public handleError(error: Error | AppError, response?: Response): void {
     error = this.handlePrismaError(error);
+    error = this.handleBodyParserError(error);
     if (this.isTrustedError(error) && response) {
       this.handleTrustedError(error as AppError, response);
     } else {
@@ -56,6 +57,21 @@ class ErrorHandler {
       default:
         return err;
     }
+  }
+
+  private handleBodyParserError(err: any) {
+    if (
+      err instanceof SyntaxError &&
+      "status" in err &&
+      err.status === 400 &&
+      "body" in err
+    )
+      return new AppError({
+        description: err.message,
+        httpCode: HttpCode.BAD_REQUEST,
+        isOperational: true,
+      });
+    else return err;
   }
 }
 
