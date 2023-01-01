@@ -34,18 +34,18 @@ export async function createUserModel(
   return { ...result, savedPets: [], pets: [] };
 }
 
-export async function loginModel(
-  email: string,
-  password: string
-): UserReturnType {
-  const user = await getUserByEmail(email);
-  if (user && password === user.password) return user;
-  else
-    throw new AppError({
-      description: "Authorization denied",
-      httpCode: HttpCode.UNAUTHORIZED,
-    });
-}
+// export async function loginModel(
+//   email: string,
+//   password: string
+// ): UserReturnType {
+//   const user = await getUserByEmail(email);
+//   if (user && password === user.password) return user;
+//   else
+//     throw new AppError({
+//       description: "Authorization denied",
+//       httpCode: HttpCode.UNAUTHORIZED,
+//     });
+// }
 
 export async function updateModel(data: UpdatePayload): UserReturnType {
   throw new Error("Not implemented yet");

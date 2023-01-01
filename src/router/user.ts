@@ -9,21 +9,16 @@ import {
 } from "../controller/user";
 import validateBody from "../middleware/validateBody";
 import userSchema from "../Schemas/userSchema";
+import { doesUserExist, hashPassword } from "../middleware/userMiddleware";
 
 const router = Router();
 
-router
-  .route("/")
-  .post(/*validateBody(userSchema),*/ createUser)
-  .get(login)
-  .patch(update); // add validateBody dude
+router.route("/").post(hashPassword, createUser).patch(update);
 
+router.post("/login", doesUserExist, login);
 router.post("/toggleSave", toggleSave);
 router.post("/toggleAdopt", toggleAdopt);
 router.post("/toggleFoster", toggleFoster);
-router.post("/test", (req, res) => {
-  res.send("test response");
-});
 
 export default router;
 

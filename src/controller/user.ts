@@ -1,12 +1,16 @@
 import { RequestHandler } from "express";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { AppError, HttpCode } from "../exceptions/AppError";
+import "dotenv/config";
 import {
   createUserModel,
-  loginModel,
   toggleSaveModel,
   toggleAdoptModel,
   toggleFosterModel,
   updateModel,
 } from "../model/user";
+import TokenData from "../Types/TokenData";
 
 export const createUser: RequestHandler = async (req, res) => {
   const user = await createUserModel(req.body);
@@ -14,9 +18,20 @@ export const createUser: RequestHandler = async (req, res) => {
 };
 
 export const login: RequestHandler = async (req, res) => {
-  const { email, password } = req.query as { email: string; password: string };
-  const user = await loginModel(email, password);
-  res.send(user);
+  const { password, user } = req.body;
+
+  const result = await bcrypt.compare(password, user.password);
+  if (!result)
+    throw new AppError({
+      description: "Authorization denied",
+      httpCode: HttpCode.BAD_REQUEST,
+      isOperational: true,
+    });
+  const tokenData: TokenData = { id: user.id };
+  const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
+    expiresIn: "1h",
+  });
+  res.send({ user, token });
 };
 
 export interface UpdatePayload {
