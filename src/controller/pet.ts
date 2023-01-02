@@ -7,6 +7,11 @@ import {
   searchModel,
   addPetModel,
 } from "../model/pet";
+import {
+  changeSaveModel,
+  changeAdoptModel,
+  changeFosterModel,
+} from "../model/user";
 
 export const getPetById: RequestHandler = async (req, res) => {
   const id = Number(req.query.id);
@@ -37,4 +42,26 @@ export const search: RequestHandler = async (req, res) => {
   };
   const pets = await searchModel(params);
   res.send(pets);
+};
+
+export const changeSave: RequestHandler = async (req, res) => {
+  const { userId, petId, isSaved } = req.body as {
+    userId: number;
+    petId: number;
+    isSaved: boolean;
+  };
+  const user = await changeSaveModel(userId, petId);
+  res.send(user);
+};
+
+export const changeAdopt: RequestHandler = async (req, res) => {
+  const { userId, petId } = req.body as { userId: number; petId: number };
+  const user = await changeAdoptModel(userId, petId);
+  res.send(user);
+};
+
+export const changeFoster: RequestHandler = async (req, res) => {
+  const { userId, petId } = req.body as { userId: number; petId: number };
+  const user = await changeFosterModel(userId, petId);
+  res.send(user);
 };

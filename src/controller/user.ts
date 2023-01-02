@@ -5,9 +5,9 @@ import { AppError, HttpCode } from "../exceptions/AppError";
 import "dotenv/config";
 import {
   createUserModel,
-  toggleSaveModel,
-  toggleAdoptModel,
-  toggleFosterModel,
+  changeSaveModel,
+  changeAdoptModel,
+  changeFosterModel,
   updateModel,
 } from "../model/user";
 import TokenData from "../Types/TokenData";
@@ -48,24 +48,24 @@ export const update: RequestHandler = async (req, res) => {
   res.send(user);
 };
 
-export const toggleSave: RequestHandler = async (req, res) => {
+export const changeSave: RequestHandler = async (req, res) => {
   const { userId, petId, isSaved } = req.body as {
     userId: number;
     petId: number;
     isSaved: boolean;
   };
-  const user = await toggleSaveModel(userId, petId);
+  const user = await changeSaveModel(userId, petId);
   res.send(user);
 };
 
-export const toggleAdopt: RequestHandler = async (req, res) => {
+export const changeAdopt: RequestHandler = async (req, res) => {
   const { userId, petId } = req.body as { userId: number; petId: number };
-  const user = await toggleAdoptModel(userId, petId);
+  const user = await changeAdoptModel(userId, petId);
   res.send(user);
 };
 
-export const toggleFoster: RequestHandler = async (req, res) => {
+export const changeFoster: RequestHandler = async (req, res) => {
   const { userId, petId } = req.body as { userId: number; petId: number };
-  const user = await toggleFosterModel(userId, petId);
+  const user = await changeFosterModel(userId, petId);
   res.send(user);
 };

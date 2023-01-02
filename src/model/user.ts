@@ -34,19 +34,6 @@ export async function createUserModel(
   return { ...result, savedPets: [], pets: [] };
 }
 
-// export async function loginModel(
-//   email: string,
-//   password: string
-// ): UserReturnType {
-//   const user = await getUserByEmail(email);
-//   if (user && password === user.password) return user;
-//   else
-//     throw new AppError({
-//       description: "Authorization denied",
-//       httpCode: HttpCode.UNAUTHORIZED,
-//     });
-// }
-
 export async function updateModel(data: UpdatePayload): UserReturnType {
   throw new Error("Not implemented yet");
 }
@@ -71,7 +58,7 @@ async function getPetAndUserById(userId: number, petId: number) {
   return { pet, user };
 }
 
-export async function toggleSaveModel(
+export async function changeSaveModel(
   userId: number,
   petId: number
 ): UserReturnType {
@@ -94,7 +81,7 @@ export async function toggleSaveModel(
   return { ...user, savedPets };
 }
 
-export async function toggleAdoptModel(
+export async function changeAdoptModel(
   userId: number,
   petId: number
 ): UserReturnType {
@@ -120,7 +107,7 @@ export async function toggleAdoptModel(
   return { ...user, pets };
 }
 
-export async function toggleFosterModel(
+export async function changeFosterModel(
   userId: number,
   petId: number
 ): UserReturnType {

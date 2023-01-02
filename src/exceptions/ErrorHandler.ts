@@ -3,12 +3,15 @@ import {
   PrismaClientValidationError,
 } from "@prisma/client/runtime";
 import { Response } from "express";
+import { JsonWebTokenError } from "jsonwebtoken";
 import { AppError, HttpCode } from "./AppError";
 
 class ErrorHandler {
   public handleError(error: Error | AppError, response?: Response): void {
     error = this.handlePrismaError(error);
     error = this.handleBodyParserError(error);
+    error = this.handleJsonWebTokenError(error);
+
     if (this.isTrustedError(error) && response) {
       this.handleTrustedError(error as AppError, response);
     } else {
@@ -72,6 +75,16 @@ class ErrorHandler {
         isOperational: true,
       });
     else return err;
+  }
+
+  private handleJsonWebTokenError(err: any) {
+    if (err instanceof JsonWebTokenError) {
+      return new AppError({
+        description: "Bad token",
+        httpCode: HttpCode.BAD_REQUEST,
+      });
+    }
+    return err;
   }
 }
 
