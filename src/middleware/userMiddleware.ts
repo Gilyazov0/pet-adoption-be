@@ -25,6 +25,12 @@ export const hashPassword: RequestHandler = async (req, res, next) => {
   if (req.body.password)
     req.body.password = await bcrypt.hash(req.body.password, saltRounds);
 
+  if (req.body.data?.password)
+    req.body.data.password = await bcrypt.hash(
+      req.body.data.password,
+      saltRounds
+    );
+
   next();
 };
 

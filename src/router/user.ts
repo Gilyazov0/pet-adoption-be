@@ -20,21 +20,31 @@ import changePetStatusSchema from "../Schemas/changePetStatusSchema";
 const router = Router();
 
 router.route("/").post(hashPassword, createUser);
-router.put("/update", validateBody(updateUserSchema), auth, update);
+
+router.put(
+  "/update",
+  validateBody(updateUserSchema),
+  hashPassword,
+  auth,
+  update
+);
 
 router.post("/login", validateBody(loginSchema), doesUserExist, login);
+
 router.post(
   "/changeSave",
   validateBody(changePetStatusSchema),
   auth,
   changeSave
 );
+
 router.post(
   "/changeAdopt",
   validateBody(changePetStatusSchema),
   auth,
   changeAdopt
 );
+
 router.post(
   "/changeFoster",
   validateBody(changePetStatusSchema),
