@@ -1,10 +1,9 @@
-import { RequestHandler } from "express";
+import { RequestHandler, Request } from "express";
 import { getUserByEmail } from "../model/user";
 import { AppError, HttpCode } from "../exceptions/AppError";
 import "dotenv/config";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import Token from "../Types/TokenData";
 import TokenData from "../Types/TokenData";
 
 export const doesUserExist: RequestHandler = async (req, res, next) => {
@@ -29,14 +28,26 @@ export const hashPassword: RequestHandler = async (req, res, next) => {
 };
 
 export const auth: RequestHandler = (req, res, next) => {
-  if (!req.headers.authorization) {
+  const token = getTokenData(req);
+  if (req.body.userId !== token)
     throw new AppError({
-      description: "Authorization headers required",
-      httpCode: HttpCode.BAD_REQUEST,
+      description: "Unauthorized",
+      httpCode: HttpCode.UNAUTHORIZED,
     });
-  }
+  next();
+};
+
+const getTokenData = (req: Request): TokenData => {
+  const error = new AppError({
+    description: "Authorization headers error",
+    httpCode: HttpCode.BAD_REQUEST,
+  });
+
+  if (!req.headers.authorization) throw error;
+
   const token = req.headers.authorization.replace("Bearer ", "");
   const decoded = jwt.verify(token, process.env.TOKEN_SECRET!) as TokenData;
-  req.body.tokenData = decoded;
-  next();
+  if (!decoded.id) throw error;
+
+  return decoded;
 };

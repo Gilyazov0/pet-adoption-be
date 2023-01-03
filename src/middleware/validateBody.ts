@@ -11,8 +11,10 @@ export default function validateBody(schema: object): RequestHandler {
     const validate = ajv.validate(schema, req.body);
     if (validate) return next();
 
+    console.log(req.body);
+
     throw new AppError({
-      description: JSON.stringify("Not valid request body", req.body),
+      description: `Not valid request body`,
       httpCode: HttpCode.BAD_REQUEST,
     });
   };

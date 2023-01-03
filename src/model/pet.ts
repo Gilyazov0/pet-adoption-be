@@ -1,11 +1,4 @@
-import {
-  PrismaClient,
-  Prisma,
-  AdoptStatus,
-  PetType,
-  Pet,
-} from "@prisma/client";
-import { search } from "../controller/pet";
+import { PrismaClient, Prisma, Pet } from "@prisma/client";
 import SearchParams from "../Types/searchParams";
 
 const prisma = new PrismaClient();

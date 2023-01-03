@@ -9,6 +9,7 @@ import {
 } from "../controller/user";
 import validateBody from "../middleware/validateBody";
 import userSchema from "../Schemas/userSchema";
+import loginSchema from "../Schemas/loginSchema";
 import {
   auth,
   doesUserExist,
@@ -19,7 +20,7 @@ const router = Router();
 
 router.route("/").post(hashPassword, createUser).patch(update);
 
-router.post("/login", doesUserExist, login);
+router.post("/login", validateBody(loginSchema), doesUserExist, login);
 router.post("/changeSave", auth, changeSave);
 router.post("/changeAdopt", auth, changeAdopt);
 router.post("/changeFoster", auth, changeFoster);
