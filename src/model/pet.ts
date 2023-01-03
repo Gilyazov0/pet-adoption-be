@@ -13,11 +13,6 @@ export async function getPetByIdModel(id: number): Promise<Pet | null> {
   return pet;
 }
 
-export async function getPetsByIdsModel(ids: number[]): Promise<Pet[]> {
-  const pets = await prisma.pet.findMany({ where: { id: { in: ids } } });
-  return pets;
-}
-
 export async function searchModel(params: SearchParams) {
   const { name, type, weight, height, status } = { ...params };
 

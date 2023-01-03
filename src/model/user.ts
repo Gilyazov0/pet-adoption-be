@@ -1,5 +1,4 @@
 import { getPetByIdModel } from "./pet";
-import { UpdatePayload } from "../controller/user";
 import { PrismaClient, Prisma, AdoptStatus, User } from "@prisma/client";
 import { AppError, HttpCode } from "../exceptions/AppError";
 import FullUserData from "../Types/FullUserData";
@@ -29,10 +28,7 @@ export async function createUserModel(
   return { ...result, savedPets: [], pets: [] };
 }
 
-export async function updateModel(
-  data: UpdatePayload,
-  userId: number
-): Promise<User> {
+export async function updateModel(data: object, userId: number): Promise<User> {
   const user = await prisma.user.update({
     where: {
       id: userId,

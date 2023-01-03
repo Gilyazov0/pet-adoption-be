@@ -44,6 +44,16 @@ export const auth: RequestHandler = (req, res, next) => {
   next();
 };
 
+export const isAdmin: RequestHandler = (req, res, next) => {
+  const tokenData = getTokenData(req);
+  if (!tokenData.isAdmin)
+    throw new AppError({
+      description: "Unauthorized",
+      httpCode: HttpCode.UNAUTHORIZED,
+    });
+  next();
+};
+
 const getTokenData = (req: Request): TokenData => {
   const error = new AppError({
     description: "Authorization headers error",

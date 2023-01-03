@@ -21,7 +21,7 @@ const router = Router();
 
 router.route("/").post(hashPassword, createUser);
 
-router.put(
+router.patch(
   "/update",
   validateBody(updateUserSchema),
   hashPassword,

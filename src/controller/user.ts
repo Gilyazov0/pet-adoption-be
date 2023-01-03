@@ -11,6 +11,7 @@ import {
   updateModel,
 } from "../model/user";
 import TokenData from "../Types/TokenData";
+import { User } from "@prisma/client";
 
 export const createUser: RequestHandler = async (req, res) => {
   const user = await createUserModel(req.body);
@@ -18,7 +19,7 @@ export const createUser: RequestHandler = async (req, res) => {
 };
 
 export const login: RequestHandler = async (req, res) => {
-  const { password, user } = req.body;
+  const { password, user } = req.body as { password: string; user: User };
 
   const result = await bcrypt.compare(password, user.password);
   if (!result)
@@ -27,24 +28,15 @@ export const login: RequestHandler = async (req, res) => {
       httpCode: HttpCode.BAD_REQUEST,
       isOperational: true,
     });
-  const tokenData: TokenData = { id: user.id };
+  const tokenData: TokenData = { id: user.id, isAdmin: user.isAdmin };
   const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
     expiresIn: "1h",
   });
   res.send({ user, token });
 };
 
-export interface UpdatePayload {
-  email: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  bio: string;
-  password?: string;
-}
 export const update: RequestHandler = async (req, res) => {
-  const data = req.body.data as UpdatePayload;
-  const user = await updateModel(data, req.body.userId);
+  const user = await updateModel(req.body.data, req.body.userId);
   res.send(user);
 };
 
