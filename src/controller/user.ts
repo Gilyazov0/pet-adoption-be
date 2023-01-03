@@ -43,8 +43,8 @@ export interface UpdatePayload {
   password?: string;
 }
 export const update: RequestHandler = async (req, res) => {
-  const data = req.body as UpdatePayload;
-  const user = await updateModel(data);
+  const data = req.body.data as UpdatePayload;
+  const user = await updateModel(data, req.body.userId);
   res.send(user);
 };
 

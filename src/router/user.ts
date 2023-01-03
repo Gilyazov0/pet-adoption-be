@@ -8,8 +8,8 @@ import {
   changeFoster,
 } from "../controller/user";
 import validateBody from "../middleware/validateBody";
-import userSchema from "../Schemas/userSchema";
 import loginSchema from "../Schemas/loginSchema";
+import updateUserSchema from "../Schemas/updateUserSchema";
 import {
   auth,
   doesUserExist,
@@ -18,7 +18,8 @@ import {
 
 const router = Router();
 
-router.route("/").post(hashPassword, createUser).patch(update);
+router.route("/").post(hashPassword, createUser);
+router.put("/update", validateBody(updateUserSchema), auth, update);
 
 router.post("/login", validateBody(loginSchema), doesUserExist, login);
 router.post("/changeSave", auth, changeSave);

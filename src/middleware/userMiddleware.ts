@@ -22,14 +22,15 @@ export const doesUserExist: RequestHandler = async (req, res, next) => {
 
 export const hashPassword: RequestHandler = async (req, res, next) => {
   const saltRounds = 10;
-  req.body.password = await bcrypt.hash(req.body.password, saltRounds);
+  if (req.body.password)
+    req.body.password = await bcrypt.hash(req.body.password, saltRounds);
 
   next();
 };
 
 export const auth: RequestHandler = (req, res, next) => {
-  const token = getTokenData(req);
-  if (req.body.userId !== token)
+  const tokenData = getTokenData(req);
+  if (!req.body.userId || req.body.userId !== tokenData.id)
     throw new AppError({
       description: "Unauthorized",
       httpCode: HttpCode.UNAUTHORIZED,
@@ -42,7 +43,6 @@ const getTokenData = (req: Request): TokenData => {
     description: "Authorization headers error",
     httpCode: HttpCode.BAD_REQUEST,
   });
-
   if (!req.headers.authorization) throw error;
 
   const token = req.headers.authorization.replace("Bearer ", "");

@@ -1,26 +1,21 @@
 import { getPetByIdModel } from "./pet";
 import { UpdatePayload } from "../controller/user";
-import { PrismaClient, Prisma, AdoptStatus, User, Pet } from "@prisma/client";
+import { PrismaClient, Prisma, AdoptStatus, User } from "@prisma/client";
 import { AppError, HttpCode } from "../exceptions/AppError";
+import FullUserData from "../Types/FullUserData";
 
 const prisma = new PrismaClient();
 
-type UserReturnType = Promise<
-  | (User & {
-      savedPets: Pet[];
-      pets: Pet[];
-    })
-  | null
->;
-
-export async function getUserByEmail(email: string): UserReturnType {
+export async function getUserByEmail(
+  email: string
+): Promise<FullUserData | null> {
   return await prisma.user.findFirst({
     where: { email },
     include: { savedPets: true, pets: true },
   });
 }
 
-export async function getUserById(id: number): UserReturnType {
+export async function getUserById(id: number): Promise<FullUserData | null> {
   return await prisma.user.findFirst({
     where: { id },
     include: { savedPets: true, pets: true },
@@ -29,13 +24,25 @@ export async function getUserById(id: number): UserReturnType {
 
 export async function createUserModel(
   user: Prisma.UserCreateInput
-): UserReturnType {
+): Promise<FullUserData> {
   const result = await prisma.user.create({ data: user });
   return { ...result, savedPets: [], pets: [] };
 }
 
-export async function updateModel(data: UpdatePayload): UserReturnType {
-  throw new Error("Not implemented yet");
+export async function updateModel(
+  data: UpdatePayload,
+  userId: number
+): Promise<User> {
+  const user = await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      ...data,
+    },
+  });
+
+  return user;
 }
 
 async function getPetAndUserById(userId: number, petId: number) {
@@ -61,7 +68,7 @@ async function getPetAndUserById(userId: number, petId: number) {
 export async function changeSaveModel(
   userId: number,
   petId: number
-): UserReturnType {
+): Promise<FullUserData> {
   const { pet, user } = await getPetAndUserById(userId, petId);
 
   const savedPets =
@@ -84,7 +91,7 @@ export async function changeSaveModel(
 export async function changeAdoptModel(
   userId: number,
   petId: number
-): UserReturnType {
+): Promise<FullUserData> {
   let { pet, user } = await getPetAndUserById(userId, petId);
 
   if (pet.ownerId && pet.ownerId !== user.id)
@@ -110,7 +117,7 @@ export async function changeAdoptModel(
 export async function changeFosterModel(
   userId: number,
   petId: number
-): UserReturnType {
+): Promise<FullUserData> {
   let { pet, user } = await getPetAndUserById(userId, petId);
 
   if (pet.ownerId && pet.ownerId !== user.id)
