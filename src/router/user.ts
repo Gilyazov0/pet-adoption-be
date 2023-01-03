@@ -15,6 +15,7 @@ import {
   doesUserExist,
   hashPassword,
 } from "../middleware/userMiddleware";
+import changePetStatusSchema from "../Schemas/changePetStatusSchema";
 
 const router = Router();
 
@@ -22,9 +23,24 @@ router.route("/").post(hashPassword, createUser);
 router.put("/update", validateBody(updateUserSchema), auth, update);
 
 router.post("/login", validateBody(loginSchema), doesUserExist, login);
-router.post("/changeSave", auth, changeSave);
-router.post("/changeAdopt", auth, changeAdopt);
-router.post("/changeFoster", auth, changeFoster);
+router.post(
+  "/changeSave",
+  validateBody(changePetStatusSchema),
+  auth,
+  changeSave
+);
+router.post(
+  "/changeAdopt",
+  validateBody(changePetStatusSchema),
+  auth,
+  changeAdopt
+);
+router.post(
+  "/changeFoster",
+  validateBody(changePetStatusSchema),
+  auth,
+  changeFoster
+);
 
 export default router;
 
