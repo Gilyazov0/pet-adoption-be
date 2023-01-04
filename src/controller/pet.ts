@@ -10,8 +10,14 @@ export const getPetById: RequestHandler = async (req, res) => {
 };
 
 export const addPet: RequestHandler = async (req, res) => {
+  req.body.picture = req.file ? req.file.path : "";
+  req.body.height = Number(req.body.height);
+  req.body.weight = Number(req.body.weight);
+  req.body.hypoallergenic = Boolean(req.body.hypoallergenic);
+  req.body.adoptionStatus = "Available";
+
   const pet = await addPetModel(req.body);
-  if (pet) res.send(pet);
+  res.send(pet);
 };
 
 export const search: RequestHandler = async (req, res) => {

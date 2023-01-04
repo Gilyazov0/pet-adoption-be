@@ -51,6 +51,7 @@ export const isAdmin: RequestHandler = (req, res, next) => {
       description: "Unauthorized",
       httpCode: HttpCode.UNAUTHORIZED,
     });
+
   next();
 };
 
