@@ -12,52 +12,61 @@ import {
 } from "../model/user";
 import TokenData from "../Types/TokenData";
 import { User } from "@prisma/client";
+import FullUserData from "../Types/FullUserData";
 
-export const createUser: RequestHandler = async (req, res) => {
-  const user = await createUserModel(req.body);
-  res.send(user);
-};
+export default class UserController {
+  public static createUser: RequestHandler = async (req, res) => {
+    const user = await createUserModel(req.body);
 
-export const login: RequestHandler = async (req, res) => {
-  const { password, user } = req.body as { password: string; user: User };
-
-  const result = await bcrypt.compare(password, user.password);
-  if (!result)
-    throw new AppError({
-      description: "Authorization denied",
-      httpCode: HttpCode.BAD_REQUEST,
-      isOperational: true,
-    });
-  const tokenData: TokenData = { id: user.id, isAdmin: user.isAdmin };
-  const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
-    expiresIn: "1h",
-  });
-  res.send({ user, token });
-};
-
-export const update: RequestHandler = async (req, res) => {
-  const user = await updateModel(req.body.data, req.body.userId);
-  res.send(user);
-};
-
-export const changeSave: RequestHandler = async (req, res) => {
-  const { userId, petId, isSaved } = req.body as {
-    userId: number;
-    petId: number;
-    isSaved: boolean;
+    res.send(this.delPassword(user));
   };
-  const user = await changeSaveModel(userId, petId);
-  res.send(user);
-};
 
-export const changeAdopt: RequestHandler = async (req, res) => {
-  const { userId, petId } = req.body as { userId: number; petId: number };
-  const user = await changeAdoptModel(userId, petId);
-  res.send(user);
-};
+  public static login: RequestHandler = async (req, res) => {
+    const { password, user } = req.body as { password: string; user: User };
 
-export const changeFoster: RequestHandler = async (req, res) => {
-  const { userId, petId } = req.body as { userId: number; petId: number };
-  const user = await changeFosterModel(userId, petId);
-  res.send(user);
-};
+    const result = await bcrypt.compare(password, user.password);
+    if (!result)
+      throw new AppError({
+        description: "Authorization denied",
+        httpCode: HttpCode.BAD_REQUEST,
+        isOperational: true,
+      });
+    const tokenData: TokenData = { id: user.id, isAdmin: user.isAdmin };
+    const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
+      expiresIn: "1h",
+    });
+    res.send({ user: this.delPassword(user), token });
+  };
+
+  public static update: RequestHandler = async (req, res) => {
+    const user = await updateModel(req.body.data, req.body.userId);
+    res.send(this.delPassword(user));
+  };
+
+  public static changeSave: RequestHandler = async (req, res) => {
+    const { userId, petId, isSaved } = req.body as {
+      userId: number;
+      petId: number;
+      isSaved: boolean;
+    };
+    const user = await changeSaveModel(userId, petId);
+    res.send(this.delPassword(user));
+  };
+
+  public static changeAdopt: RequestHandler = async (req, res) => {
+    const { userId, petId } = req.body as { userId: number; petId: number };
+    const user = await changeAdoptModel(userId, petId);
+    res.send(this.delPassword(user));
+  };
+
+  public static changeFoster: RequestHandler = async (req, res) => {
+    const { userId, petId } = req.body as { userId: number; petId: number };
+    const user = await changeFosterModel(userId, petId);
+    res.send(this.delPassword(user));
+  };
+
+  private static delPassword(data: Partial<User | FullUserData>) {
+    delete data.password;
+    return data;
+  }
+}
