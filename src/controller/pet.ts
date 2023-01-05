@@ -1,6 +1,11 @@
-import { RequestHandler } from "express";
+import { RequestHandler, Request } from "express";
 import SearchParams from "../Types/searchParams";
-import { getPetByIdModel, searchModel, addPetModel } from "../model/pet";
+import {
+  getPetByIdModel,
+  searchModel,
+  addPetModel,
+  updatePetModel,
+} from "../model/pet";
 
 export default class PetController {
   public static getPetById: RequestHandler = async (req, res) => {
@@ -11,13 +16,20 @@ export default class PetController {
   };
 
   public static addPet: RequestHandler = async (req, res) => {
-    req.body.picture = req.file ? req.file.path : "";
-    req.body.height = Number(req.body.height);
-    req.body.weight = Number(req.body.weight);
-    req.body.hypoallergenic = Boolean(req.body.hypoallergenic);
-    req.body.adoptionStatus = "Available";
+    req = this.dataPreparation(req);
 
     const pet = await addPetModel(req.body);
+    res.send(pet);
+  };
+
+  public static updatePet: RequestHandler = async (req, res) => {
+    req = this.dataPreparation(req);
+    if (!req.body.picture) delete req.body.picture;
+    const id = Number(req.body.id);
+    delete req.body.id;
+
+    const pet = await updatePetModel(req.body, id);
+
     res.send(pet);
   };
 
@@ -30,4 +42,12 @@ export default class PetController {
     const pets = await searchModel(params);
     res.send(pets);
   };
+
+  private static dataPreparation(req: Request) {
+    req.body.picture! = req.file ? req.file.path : "";
+    req.body.height! = Number(req.body.height);
+    req.body.weight! = Number(req.body.weight);
+    req.body.hypoallergenic! = Boolean(req.body.hypoallergenic);
+    return req;
+  }
 }

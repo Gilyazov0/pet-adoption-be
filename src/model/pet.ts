@@ -7,6 +7,13 @@ export async function addPetModel(pet: Prisma.PetCreateInput) {
   const result = await prisma.pet.create({ data: pet });
   return result;
 }
+export async function updatePetModel(pet: Prisma.PetCreateInput, id: number) {
+  const result = await prisma.pet.update({
+    where: { id },
+    data: { ...pet },
+  });
+  return result;
+}
 
 export async function getPetByIdModel(id: number): Promise<Pet | null> {
   const pet = await prisma.pet.findFirst({ where: { id } });
