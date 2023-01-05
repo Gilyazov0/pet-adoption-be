@@ -14,6 +14,12 @@ export async function getUserByEmail(
   });
 }
 
+export async function getAllUsersModel(): Promise<FullUserData[] | null> {
+  return await prisma.user.findMany({
+    include: { savedPets: true, pets: true },
+  });
+}
+
 export async function getUserById(id: number): Promise<FullUserData | null> {
   return await prisma.user.findFirst({
     where: { id },

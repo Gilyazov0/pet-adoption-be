@@ -9,10 +9,11 @@ import {
   hashPassword,
 } from "../middleware/userMiddleware";
 import changePetStatusSchema from "../Schemas/changePetStatusSchema";
+import { isAdmin } from "../middleware/userMiddleware";
 
 const router = Router();
 
-router.route("/").post(hashPassword, UserController.createUser);
+router.post("/", hashPassword, UserController.createUser);
 
 router.patch(
   "/update",
@@ -50,6 +51,7 @@ router.post(
   UserController.changeFoster
 );
 
+router.get("/allUsers", auth, isAdmin);
 export default router;
 
 JSON.stringify;

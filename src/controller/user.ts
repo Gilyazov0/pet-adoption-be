@@ -9,12 +9,21 @@ import {
   changeAdoptModel,
   changeFosterModel,
   updateModel,
+  getAllUsersModel,
 } from "../model/user";
 import TokenData from "../Types/TokenData";
 import { User } from "@prisma/client";
 import FullUserData from "../Types/FullUserData";
 
 export default class UserController {
+  public static getAllUsers: RequestHandler = async (req, res) => {
+    const users = await getAllUsersModel();
+    if (users) {
+      for (const user of users) this.delPassword(user);
+    }
+    res.send(users);
+  };
+
   public static createUser: RequestHandler = async (req, res) => {
     const user = await createUserModel(req.body);
 
