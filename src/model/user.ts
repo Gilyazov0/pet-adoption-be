@@ -14,7 +14,7 @@ export async function getUserByEmail(
   });
 }
 
-export async function getAllUsersModel(): Promise<FullUserData[] | null> {
+export async function getAllUsersModel(): Promise<FullUserData[]> {
   return await prisma.user.findMany({
     include: { savedPets: true, pets: true },
   });

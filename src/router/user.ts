@@ -51,7 +51,5 @@ router.post(
   UserController.changeFoster
 );
 
-router.get("/allUsers", auth, isAdmin);
+router.get("/allUsers", isAdmin, UserController.getAllUsers);
 export default router;
-
-JSON.stringify;

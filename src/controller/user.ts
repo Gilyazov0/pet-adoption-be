@@ -18,9 +18,8 @@ import FullUserData from "../Types/FullUserData";
 export default class UserController {
   public static getAllUsers: RequestHandler = async (req, res) => {
     const users = await getAllUsersModel();
-    if (users) {
-      for (const user of users) this.delPassword(user);
-    }
+    for (const user of users) this.delPassword(user);
+
     res.send(users);
   };
 

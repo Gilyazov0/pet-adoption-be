@@ -48,7 +48,7 @@ export const isAdmin: RequestHandler = (req, res, next) => {
   const tokenData = getTokenData(req);
   if (!tokenData.isAdmin)
     throw new AppError({
-      description: "Unauthorized",
+      description: "Unauthorized for not admin users",
       httpCode: HttpCode.UNAUTHORIZED,
     });
 
