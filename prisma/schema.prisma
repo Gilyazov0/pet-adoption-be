@@ -18,6 +18,7 @@ model User {
   isAdmin   Boolean @default(false) @map("is_admin")
   pets      Pet[]   @relation("OwnedPets")
   savedPets Pet[]   @relation("SavedPets")
+  events    Event[]
 
   @@map("users")
 }
@@ -38,9 +39,31 @@ model Pet {
   owner          User?       @relation("OwnedPets", fields: [ownerId], references: [id])
   ownerId        Int?        @map("owner_id")
   saved_by       User[]      @relation("SavedPets")
+  events         Event[]
 
   @@fulltext([name])
   @@map("pets")
+}
+
+model Event {
+  id        Int          @id @default(autoincrement())
+  type      EventType
+  time      DateTime     @default(now())
+  author    User         @relation(fields: [authorId], references: [id])
+  authorId  Int          @map("author_id")
+  pet       Pet?         @relation(fields: [petId], references: [id])
+  petId     Int?         @map("pet_id")
+  newStatus AdoptStatus?
+
+  @@map("events")
+}
+
+enum EventType {
+  NewUser
+  NewPet
+  PetUpdate
+  Login
+  NewPetStatus
 }
 
 enum PetType {

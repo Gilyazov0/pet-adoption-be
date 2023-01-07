@@ -4,6 +4,7 @@ import {
 } from "@prisma/client/runtime";
 import { Response } from "express";
 import { JsonWebTokenError } from "jsonwebtoken";
+import { MulterError } from "multer";
 import { AppError, HttpCode } from "./AppError";
 
 class ErrorHandler {
@@ -11,6 +12,7 @@ class ErrorHandler {
     error = this.handlePrismaError(error);
     error = this.handleBodyParserError(error);
     error = this.handleJsonWebTokenError(error);
+    error = this.handleMulterError(error);
 
     if (this.isTrustedError(error) && response) {
       this.handleTrustedError(error as AppError, response);
@@ -81,6 +83,16 @@ class ErrorHandler {
     if (err instanceof JsonWebTokenError) {
       return new AppError({
         description: "Bad token",
+        httpCode: HttpCode.BAD_REQUEST,
+      });
+    }
+    return err;
+  }
+
+  private handleMulterError(err: any) {
+    if (err instanceof MulterError && err.code === "LIMIT_UNEXPECTED_FILE") {
+      return new AppError({
+        description: "Bad file",
         httpCode: HttpCode.BAD_REQUEST,
       });
     }

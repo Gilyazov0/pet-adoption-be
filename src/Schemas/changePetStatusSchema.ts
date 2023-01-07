@@ -1,8 +1,13 @@
 const changePetStatusSchema = {
   type: "object",
   properties: {
-    petId: { type: "number" },
-    userId: { type: "number" },
+    data: {
+      type: "object",
+      properties: {
+        petId: { type: "number" },
+        userId: { type: "number" },
+      },
+    },
   },
   required: ["petId", "userId"],
 };

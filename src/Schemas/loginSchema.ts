@@ -1,10 +1,14 @@
 const loginSchema = {
   type: "object",
   properties: {
-    email: { type: "string", format: "email" },
-    password: { type: "string" },
+    data: {
+      type: "object",
+      properties: {
+        email: { type: "string" },
+        password: { type: "string" },
+      },
+    },
   },
-  required: ["email", "password"],
 };
 
 export default loginSchema;

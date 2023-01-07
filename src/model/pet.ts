@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 
 export async function addPetModel(pet: Prisma.PetCreateInput) {
   const result = await prisma.pet.create({ data: pet });
+
   return result;
 }
 export async function updatePetModel(pet: Prisma.PetCreateInput, id: number) {

@@ -24,13 +24,16 @@ export default class UserController {
   };
 
   public static createUser: RequestHandler = async (req, res) => {
-    const user = await createUserModel(req.body);
+    const user = await createUserModel(req.body.data);
 
     res.send(this.delPassword(user));
   };
 
   public static login: RequestHandler = async (req, res) => {
-    const { password, user } = req.body as { password: string; user: User };
+    const { password, user } = req.body.data as {
+      password: string;
+      user: User;
+    };
 
     const result = await bcrypt.compare(password, user.password);
     if (!result)
@@ -47,29 +50,25 @@ export default class UserController {
   };
 
   public static update: RequestHandler = async (req, res) => {
-    const user = await updateModel(req.body.data, req.body.userId);
+    const user = await updateModel(req.body.data, req.body.tokenData.userId);
     res.send(this.delPassword(user));
   };
 
   public static changeSave: RequestHandler = async (req, res) => {
-    const { userId, petId, isSaved } = req.body as {
-      userId: number;
-      petId: number;
-      isSaved: boolean;
-    };
-    const user = await changeSaveModel(userId, petId);
+    const { petId } = req.body.data as { petId: number };
+    const user = await changeSaveModel(req.body.tokenData.userId, petId);
     res.send(this.delPassword(user));
   };
 
   public static changeAdopt: RequestHandler = async (req, res) => {
-    const { userId, petId } = req.body as { userId: number; petId: number };
-    const user = await changeAdoptModel(userId, petId);
+    const { petId } = req.body as { petId: number };
+    const user = await changeAdoptModel(req.body.tokenData.userId, petId);
     res.send(this.delPassword(user));
   };
 
   public static changeFoster: RequestHandler = async (req, res) => {
-    const { userId, petId } = req.body as { userId: number; petId: number };
-    const user = await changeFosterModel(userId, petId);
+    const { petId } = req.body as { petId: number };
+    const user = await changeFosterModel(req.body.tokenData.userId, petId);
     res.send(this.delPassword(user));
   };
 

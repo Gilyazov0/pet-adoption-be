@@ -16,7 +16,7 @@ export const doesUserExist: RequestHandler = async (req, res, next) => {
     });
   }
 
-  req.body.user = user;
+  req.body.data.user = user;
   next();
 };
 
@@ -51,6 +51,7 @@ export const isAdmin: RequestHandler = (req, res, next) => {
       description: "Unauthorized for not admin users",
       httpCode: HttpCode.UNAUTHORIZED,
     });
+  console.log("in isAdmin", req.body.tokenData);
 
   next();
 };
@@ -66,5 +67,6 @@ const getTokenData = (req: Request): TokenData => {
   const decoded = jwt.verify(token, process.env.TOKEN_SECRET!) as TokenData;
   if (!decoded.id) throw error;
 
+  req.body.tokenData = decoded;
   return decoded;
 };
