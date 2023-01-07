@@ -7,7 +7,6 @@ import {
   updatePetModel,
 } from "../model/pet";
 import { AddEvent } from "../model/event";
-import { getUserById } from "../model/user";
 import { Prisma } from "@prisma/client";
 
 export default class PetController {
@@ -49,8 +48,10 @@ export default class PetController {
       type: "PetUpdate",
       petId: pet.id,
     };
+
     if (prevPet?.adoptionStatus !== pet.adoptionStatus)
       event.newStatus = pet.adoptionStatus;
+
     AddEvent(event);
 
     res.send(pet);

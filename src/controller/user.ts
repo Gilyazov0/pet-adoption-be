@@ -12,8 +12,9 @@ import {
   getAllUsersModel,
 } from "../model/user";
 import TokenData from "../Types/TokenData";
-import { User } from "@prisma/client";
+import { User, AdoptStatus } from "@prisma/client";
 import FullUserData from "../Types/FullUserData";
+import { AddEvent } from "../model/event";
 
 export default class UserController {
   public static getAllUsers: RequestHandler = async (req, res) => {
@@ -25,6 +26,8 @@ export default class UserController {
 
   public static createUser: RequestHandler = async (req, res) => {
     const user = await createUserModel(req.body.data);
+
+    AddEvent({ authorId: user.id, type: "NewUser" });
 
     res.send(this.delPassword(user));
   };
@@ -39,36 +42,51 @@ export default class UserController {
     if (!result)
       throw new AppError({
         description: "Authorization denied",
-        httpCode: HttpCode.BAD_REQUEST,
+        httpCode: HttpCode.UNAUTHORIZED,
         isOperational: true,
       });
+
     const tokenData: TokenData = { id: user.id, isAdmin: user.isAdmin };
     const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
       expiresIn: "1h",
     });
+
+    AddEvent({ authorId: user.id, type: "Login" });
+
     res.send({ user: this.delPassword(user), token });
   };
 
   public static update: RequestHandler = async (req, res) => {
-    const user = await updateModel(req.body.data, req.body.tokenData.userId);
+    const user = await updateModel(req.body.data, req.body.tokenData.id);
     res.send(this.delPassword(user));
   };
 
   public static changeSave: RequestHandler = async (req, res) => {
     const { petId } = req.body.data as { petId: number };
-    const user = await changeSaveModel(req.body.tokenData.userId, petId);
+    const user = await changeSaveModel(req.body.tokenData.id, petId);
     res.send(this.delPassword(user));
   };
 
   public static changeAdopt: RequestHandler = async (req, res) => {
-    const { petId } = req.body as { petId: number };
-    const user = await changeAdoptModel(req.body.tokenData.userId, petId);
+    const { petId } = req.body.data as { petId: number };
+
+    const user = await changeAdoptModel(req.body.tokenData.id, petId);
+
+    const newStatus: AdoptStatus =
+      user.pets.find((pet) => pet.id === petId)?.adoptionStatus || "Available";
+
+    AddEvent({
+      authorId: req.body.tokenData.id,
+      type: "NewPetStatus",
+      petId: petId,
+      newStatus,
+    });
     res.send(this.delPassword(user));
   };
 
   public static changeFoster: RequestHandler = async (req, res) => {
-    const { petId } = req.body as { petId: number };
-    const user = await changeFosterModel(req.body.tokenData.userId, petId);
+    const { petId } = req.body.data as { petId: number };
+    const user = await changeFosterModel(req.body.tokenData.id, petId);
     res.send(this.delPassword(user));
   };
 

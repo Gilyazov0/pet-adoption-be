@@ -36,11 +36,12 @@ export const hashPassword: RequestHandler = async (req, res, next) => {
 
 export const auth: RequestHandler = (req, res, next) => {
   const tokenData = getTokenData(req);
-  if (!req.body.userId || req.body.userId !== tokenData.id)
+  if (!tokenData.id)
     throw new AppError({
       description: "Unauthorized",
       httpCode: HttpCode.UNAUTHORIZED,
     });
+
   next();
 };
 

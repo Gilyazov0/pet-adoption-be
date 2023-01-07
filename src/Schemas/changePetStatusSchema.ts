@@ -5,11 +5,10 @@ const changePetStatusSchema = {
       type: "object",
       properties: {
         petId: { type: "number" },
-        userId: { type: "number" },
       },
+      required: ["petId"],
     },
   },
-  required: ["petId", "userId"],
 };
 
 export default changePetStatusSchema;

@@ -97,7 +97,10 @@ export async function changeAdoptModel(
   let { pet, user } = await getPetAndUserById(userId, petId);
 
   if (pet.ownerId && pet.ownerId !== user.id)
-    throw new Error("Pet have another owner");
+    throw new AppError({
+      description: "Pet have another owner",
+      httpCode: HttpCode.BAD_REQUEST,
+    });
 
   const data =
     pet.adoptionStatus === AdoptStatus.Adopted

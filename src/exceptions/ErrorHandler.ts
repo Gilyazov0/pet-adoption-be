@@ -3,7 +3,7 @@ import {
   PrismaClientValidationError,
 } from "@prisma/client/runtime";
 import { Response } from "express";
-import { JsonWebTokenError } from "jsonwebtoken";
+import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import { MulterError } from "multer";
 import { AppError, HttpCode } from "./AppError";
 
@@ -74,12 +74,17 @@ class ErrorHandler {
       return new AppError({
         description: err.message,
         httpCode: HttpCode.BAD_REQUEST,
-        isOperational: true,
       });
     else return err;
   }
 
   private handleJsonWebTokenError(err: any) {
+    if (err instanceof TokenExpiredError) {
+      return new AppError({
+        description: "Token expired",
+        httpCode: HttpCode.BAD_REQUEST,
+      });
+    }
     if (err instanceof JsonWebTokenError) {
       return new AppError({
         description: "Bad token",

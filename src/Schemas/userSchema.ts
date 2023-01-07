@@ -11,9 +11,9 @@ const userSchema = {
         bio: { type: "string" },
         password: { type: "string" },
       },
+      required: ["email", "firstName", "lastName"],
     },
   },
-  required: ["email", "firstName", "lastName"],
 };
 
 export default userSchema;

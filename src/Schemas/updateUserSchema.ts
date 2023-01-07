@@ -7,9 +7,9 @@ const updateUserSchema = {
         userId: { type: "number" },
         data: { type: "object" },
       },
+      required: ["userId", "data"],
     },
   },
-  required: ["userId", "data"],
 };
 
 export default updateUserSchema;
