@@ -52,4 +52,5 @@ router.post(
 );
 
 router.get("/allUsers", isAdmin, UserController.getAllUsers);
+
 export default router;

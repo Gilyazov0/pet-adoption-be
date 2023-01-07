@@ -14,7 +14,7 @@ import {
 import TokenData from "../Types/TokenData";
 import { User, AdoptStatus } from "@prisma/client";
 import FullUserData from "../Types/FullUserData";
-import { AddEvent } from "../model/event";
+import { AddEventModel } from "../model/event";
 
 export default class UserController {
   public static getAllUsers: RequestHandler = async (req, res) => {
@@ -27,7 +27,7 @@ export default class UserController {
   public static createUser: RequestHandler = async (req, res) => {
     const user = await createUserModel(req.body.data);
 
-    AddEvent({ authorId: user.id, type: "NewUser" });
+    AddEventModel({ authorId: user.id, type: "NewUser" });
 
     res.send(this.delPassword(user));
   };
@@ -51,7 +51,7 @@ export default class UserController {
       expiresIn: "1h",
     });
 
-    AddEvent({ authorId: user.id, type: "Login" });
+    AddEventModel({ authorId: user.id, type: "Login" });
 
     res.send({ user: this.delPassword(user), token });
   };
@@ -75,7 +75,7 @@ export default class UserController {
     const newStatus: AdoptStatus =
       user.pets.find((pet) => pet.id === petId)?.adoptionStatus || "Available";
 
-    AddEvent({
+    AddEventModel({
       authorId: req.body.tokenData.id,
       type: "NewPetStatus",
       petId: petId,
@@ -92,7 +92,7 @@ export default class UserController {
       user.pets.find((pet) => pet.id === petId)?.adoptionStatus || "Available";
     console.log(user.pets, newStatus, petId);
 
-    AddEvent({
+    AddEventModel({
       authorId: req.body.tokenData.id,
       type: "NewPetStatus",
       petId: petId,
@@ -102,7 +102,7 @@ export default class UserController {
     res.send(this.delPassword(user));
   };
 
-  private static delPassword(data: Partial<User | FullUserData>) {
+  public static delPassword(data: Partial<User | FullUserData>) {
     delete data.password;
     return data;
   }

@@ -6,7 +6,7 @@ import {
   addPetModel,
   updatePetModel,
 } from "../model/pet";
-import { AddEvent } from "../model/event";
+import { AddEventModel } from "../model/event";
 import { Prisma } from "@prisma/client";
 
 export default class PetController {
@@ -22,7 +22,7 @@ export default class PetController {
     req = this.dataPreparation(req);
 
     const pet = await addPetModel(req.body.data);
-    AddEvent({
+    AddEventModel({
       authorId: req.body.tokenData.id,
       type: "NewPet",
       newStatus: pet.adoptionStatus,
@@ -52,7 +52,7 @@ export default class PetController {
     if (prevPet?.adoptionStatus !== pet.adoptionStatus)
       event.newStatus = pet.adoptionStatus;
 
-    AddEvent(event);
+    AddEventModel(event);
 
     res.send(pet);
   };
