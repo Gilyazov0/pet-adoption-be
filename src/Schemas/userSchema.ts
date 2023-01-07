@@ -14,6 +14,7 @@ const userSchema = {
       required: ["email", "firstName", "lastName"],
     },
   },
+  required: ["data"],
 };
 
 export default userSchema;

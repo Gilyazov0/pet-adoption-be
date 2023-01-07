@@ -17,6 +17,7 @@ const petSchema = {
       },
     },
   },
+  required: ["data"],
 };
 
 export default petSchema;

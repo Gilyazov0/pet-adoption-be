@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 import TokenData from "../Types/TokenData";
 
 export const doesUserExist: RequestHandler = async (req, res, next) => {
-  const user = await getUserByEmail(req.body.email);
+  const user = await getUserByEmail(req.body.data.email);
   if (!user) {
     throw new AppError({
       description: "Authorization denied",
@@ -66,6 +66,9 @@ const getTokenData = (req: Request): TokenData => {
 
   const token = req.headers.authorization.replace("Bearer ", "");
   const decoded = jwt.verify(token, process.env.TOKEN_SECRET!) as TokenData;
+
+  console.log(decoded);
+
   if (!decoded.id) throw error;
 
   req.body.tokenData = decoded;

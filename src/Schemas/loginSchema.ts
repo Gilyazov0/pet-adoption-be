@@ -10,6 +10,7 @@ const loginSchema = {
       required: ["email", "password"],
     },
   },
+  required: ["data"],
 };
 
 export default loginSchema;

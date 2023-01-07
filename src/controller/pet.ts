@@ -32,7 +32,6 @@ export default class PetController {
   };
 
   public static addPet: RequestHandler = async (req, res) => {
-    console.log("addPet", req.body.data);
     req = this.dataPreparation(req);
 
     const pet = await addPetModel(req.body.data);

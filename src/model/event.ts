@@ -1,5 +1,4 @@
 import { PrismaClient, Prisma } from "@prisma/client";
-import { type } from "os";
 
 const prisma = new PrismaClient();
 
@@ -27,4 +26,21 @@ export async function getNewsfeedModel(
     include: { author: true, pet: true },
   });
   return result;
+}
+
+export async function getNewPetsModel(userId: number) {
+  const lastLogin = await prisma.event.findFirst({
+    where: { authorId: userId, type: "Login" },
+    orderBy: { time: "desc" },
+    select: { time: true },
+  });
+
+  if (!lastLogin) return [];
+
+  console.log(userId, lastLogin.time);
+
+  const newPets = await prisma.event.findMany({
+    where: { type: "NewPet", time: { gt: lastLogin.time } },
+  });
+  return newPets;
 }

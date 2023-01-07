@@ -10,6 +10,7 @@ const updateUserSchema = {
       required: ["userId", "data"],
     },
   },
+  required: ["data"],
 };
 
 export default updateUserSchema;
