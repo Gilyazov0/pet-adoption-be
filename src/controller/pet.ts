@@ -32,7 +32,7 @@ export default class PetController {
   };
 
   public static addPet: RequestHandler = async (req, res) => {
-    console.log("addPet", req.body.tokenData);
+    console.log("addPet", req.body.data);
     req = this.dataPreparation(req);
 
     const pet = await addPetModel(req.body.data);
@@ -101,7 +101,7 @@ export default class PetController {
     data.picture! = req.file ? req.file.path : data.picture;
     data.height! = Number(data.height);
     data.weight! = Number(data.weight);
-    data.ownerId! = Number(data.ownerId);
+    if (data.ownerId) data.ownerId! = Number(data.ownerId);
     data.hypoallergenic! = Boolean(data.hypoallergenic);
     return req;
   }

@@ -67,7 +67,7 @@ export default class UserController {
 
     const tokenData: TokenData = { id: user.id, isAdmin: user.isAdmin };
     const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
-      expiresIn: "1h",
+      expiresIn: "1d",
     });
 
     AddEventModel({ authorId: user.id, type: "Login" });
