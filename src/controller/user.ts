@@ -87,6 +87,18 @@ export default class UserController {
   public static changeFoster: RequestHandler = async (req, res) => {
     const { petId } = req.body.data as { petId: number };
     const user = await changeFosterModel(req.body.tokenData.id, petId);
+
+    const newStatus: AdoptStatus =
+      user.pets.find((pet) => pet.id === petId)?.adoptionStatus || "Available";
+    console.log(user.pets, newStatus, petId);
+
+    AddEvent({
+      authorId: req.body.tokenData.id,
+      type: "NewPetStatus",
+      petId: petId,
+      newStatus,
+    });
+
     res.send(this.delPassword(user));
   };
 

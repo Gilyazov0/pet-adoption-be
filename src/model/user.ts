@@ -148,7 +148,7 @@ export async function changeFosterModel(
   });
 
   const pets = newPet.ownerId
-    ? [...user.pets, pet]
+    ? [...user.pets, newPet]
     : user.pets.filter((pet) => pet.id !== petId);
   return { ...user, pets };
 }
