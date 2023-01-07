@@ -7,7 +7,8 @@ import {
   updatePetModel,
 } from "../model/pet";
 import { AddEventModel } from "../model/event";
-import { Prisma } from "@prisma/client";
+import { Prisma, AdoptStatus, Pet } from "@prisma/client";
+import { changeAdoptModel, changeFosterModel } from "../model/user";
 
 export default class PetController {
   public static getPetById: RequestHandler = async (req, res) => {
@@ -34,12 +35,27 @@ export default class PetController {
 
   public static updatePet: RequestHandler = async (req, res) => {
     req = this.dataPreparation(req);
+    const data = req.body.data as Partial<Pet>;
+    const id = Number(data.id);
 
-    if (!req.body.data.picture) delete req.body.data.picture;
-    const id = Number(req.body.data.id);
+    if (!data.picture) delete data.picture;
+    delete data.id;
 
     const prevPet = await getPetByIdModel(id);
-    delete req.body.data.id;
+
+    let newStatus: AdoptStatus | undefined = undefined;
+    if (
+      data.adoptionStatus === "Available" &&
+      prevPet?.adoptionStatus !== "Available"
+    ) {
+      newStatus = "Available";
+      if (prevPet?.adoptionStatus === "Adopted")
+        changeAdoptModel(prevPet.ownerId!, id);
+
+      if (prevPet?.adoptionStatus === "Fostered")
+        changeFosterModel(prevPet.ownerId!, id);
+    }
+    delete data.adoptionStatus;
 
     const pet = await updatePetModel(req.body.data, id);
 
@@ -48,9 +64,7 @@ export default class PetController {
       type: "PetUpdate",
       petId: pet.id,
     };
-
-    if (prevPet?.adoptionStatus !== pet.adoptionStatus)
-      event.newStatus = pet.adoptionStatus;
+    if (newStatus) event.newStatus;
 
     AddEventModel(event);
 
@@ -74,6 +88,7 @@ export default class PetController {
     data.picture! = req.file ? req.file.path : data.picture;
     data.height! = Number(data.height);
     data.weight! = Number(data.weight);
+    data.ownerId! = Number(data.ownerId);
     data.hypoallergenic! = Boolean(data.hypoallergenic);
     return req;
   }

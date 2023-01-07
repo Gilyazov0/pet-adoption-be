@@ -8,7 +8,7 @@ export async function addPetModel(pet: Prisma.PetCreateInput) {
 
   return result;
 }
-export async function updatePetModel(pet: Prisma.PetCreateInput, id: number) {
+export async function updatePetModel(pet: Prisma.PetUpdateInput, id: number) {
   const result = await prisma.pet.update({
     where: { id },
     data: { ...pet },
