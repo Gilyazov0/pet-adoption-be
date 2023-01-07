@@ -1,4 +1,4 @@
-import { RequestHandler } from "express";
+import { query, RequestHandler } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { AppError, HttpCode } from "../exceptions/AppError";
@@ -10,6 +10,7 @@ import {
   changeFosterModel,
   updateModel,
   getAllUsersModel,
+  getUserByIdModel,
 } from "../model/user";
 import TokenData from "../Types/TokenData";
 import { User, AdoptStatus } from "@prisma/client";
@@ -22,6 +23,24 @@ export default class UserController {
     for (const user of users) this.delPassword(user);
 
     res.send(users);
+  };
+
+  public static getUserById: RequestHandler = async (req, res) => {
+    const id = Number(req.query.id);
+    if (!id)
+      throw new AppError({
+        description: "Invalid params",
+        httpCode: HttpCode.BAD_REQUEST,
+      });
+
+    const user = await getUserByIdModel(id);
+    if (user) res.send(this.delPassword(user));
+    else {
+      throw new AppError({
+        description: "user not found",
+        httpCode: HttpCode.NOT_FOUND,
+      });
+    }
   };
 
   public static createUser: RequestHandler = async (req, res) => {

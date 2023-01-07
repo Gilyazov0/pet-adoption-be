@@ -9,13 +9,26 @@ import {
 import { AddEventModel } from "../model/event";
 import { Prisma, AdoptStatus, Pet } from "@prisma/client";
 import { changeAdoptModel, changeFosterModel } from "../model/user";
+import { AppError, HttpCode } from "../exceptions/AppError";
 
 export default class PetController {
   public static getPetById: RequestHandler = async (req, res) => {
     const id = Number(req.query.id);
 
+    if (!id)
+      throw new AppError({
+        description: "Invalid params",
+        httpCode: HttpCode.BAD_REQUEST,
+      });
+
     const pet = await getPetByIdModel(id);
-    res.send(pet);
+    if (pet) res.send(pet);
+    else {
+      throw new AppError({
+        description: "user not found",
+        httpCode: HttpCode.NOT_FOUND,
+      });
+    }
   };
 
   public static addPet: RequestHandler = async (req, res) => {

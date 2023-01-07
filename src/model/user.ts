@@ -20,7 +20,9 @@ export async function getAllUsersModel(): Promise<FullUserData[]> {
   });
 }
 
-export async function getUserById(id: number): Promise<FullUserData | null> {
+export async function getUserByIdModel(
+  id: number
+): Promise<FullUserData | null> {
   return await prisma.user.findFirst({
     where: { id },
     include: { savedPets: true, pets: true },
@@ -49,7 +51,7 @@ export async function updateModel(data: object, userId: number): Promise<User> {
 
 async function getPetAndUserById(userId: number, petId: number) {
   const [user, pet] = await Promise.all([
-    getUserById(userId),
+    getUserByIdModel(userId),
     getPetByIdModel(petId),
   ]);
 

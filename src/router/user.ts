@@ -13,7 +13,10 @@ import { isAdmin } from "../middleware/userMiddleware";
 
 const router = Router();
 
-router.post("/", hashPassword, UserController.createUser);
+router
+  .route("/")
+  .post(hashPassword, UserController.createUser)
+  .get(isAdmin, UserController.getUserById);
 
 router.patch(
   "/update",
