@@ -16,15 +16,13 @@ const router = Router();
 router
   .route("/")
   .post(hashPassword, UserController.createUser)
-  .get(isAdmin, UserController.getUserById);
-
-router.patch(
-  "/update",
-  validateBody(updateUserSchema),
-  hashPassword,
-  auth,
-  UserController.update
-);
+  .get(isAdmin, UserController.getUserById)
+  .patch(
+    validateBody(updateUserSchema),
+    hashPassword,
+    auth,
+    UserController.update
+  );
 
 router.post(
   "/login",

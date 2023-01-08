@@ -9,12 +9,16 @@ import eventRouter from "./router/event";
 import handleError from "./middleware/handleError";
 import { RequestHandler } from "express";
 import { AppError, HttpCode } from "./exceptions/AppError";
+import cookieParser from "cookie-parser";
 
 const port = process.env.PORT || 8080;
 
 const app = express();
 
-app.use(cors<Request>());
+app.use(
+  cors<Request>({ origin: ["http://localhost:5173"], credentials: true })
+);
+app.use(cookieParser());
 app.use(express.json());
 
 app.use("/pet/", petRouter);

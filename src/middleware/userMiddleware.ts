@@ -62,9 +62,17 @@ const getTokenData = (req: Request): TokenData => {
     description: "Authorization headers error",
     httpCode: HttpCode.BAD_REQUEST,
   });
-  if (!req.headers.authorization) throw error;
+  // if (!req.headers.authorization) throw error;
+  console.log("cookies", req.cookies);
+  if (!req.cookies?.token)
+    throw new AppError({
+      description: " Bad token",
+      httpCode: HttpCode.BAD_REQUEST,
+    });
+  const token = req.cookies.token;
+  // const token = req.headers.authorization.replace("Bearer ", "");
+  console.log(token);
 
-  const token = req.headers.authorization.replace("Bearer ", "");
   const decoded = jwt.verify(token, process.env.TOKEN_SECRET!) as TokenData;
 
   console.log(decoded);

@@ -9,6 +9,7 @@ const changePetStatusSchema = {
       required: ["petId"],
     },
   },
+  required: ["data"],
 };
 
 export default changePetStatusSchema;

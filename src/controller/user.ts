@@ -66,13 +66,19 @@ export default class UserController {
       });
 
     const tokenData: TokenData = { id: user.id, isAdmin: user.isAdmin };
+
     const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
       expiresIn: "1d",
     });
 
+    res.cookie("token", token, { maxAge: 86000000, httpOnly: true });
+
     AddEventModel({ authorId: user.id, type: "Login" });
 
-    res.send({ user: this.delPassword(user), token });
+    res.send({
+      user: this.delPassword(user),
+      // , token
+    });
   };
 
   public static update: RequestHandler = async (req, res) => {
