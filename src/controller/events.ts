@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
-import { getNewPetsModel, getNewsfeedModel } from "../model/event";
+import { getNewsfeedModel } from "../model/event";
 import UserController from "./user";
-import { getPetByIdModel } from "../model/pet";
+import { getNewPetsModel, getPetByIdModel } from "../model/pet";
 
 export default class EventsController {
   public static getNewsfeed: RequestHandler = async (req, res) => {
@@ -20,20 +20,5 @@ export default class EventsController {
     }
 
     res.send(result);
-  };
-
-  public static getNewPets: RequestHandler = async (req, res) => {
-    const id = req.body.tokenData.id;
-    const events = await getNewPetsModel(id);
-
-    const promises = [];
-    for (const event of events) {
-      promises.push(getPetByIdModel(event.petId!));
-    }
-    const pets = await Promise.all(promises);
-
-    console.log("new pets", pets);
-
-    res.send(pets);
   };
 }

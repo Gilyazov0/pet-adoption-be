@@ -22,8 +22,11 @@ export const doesUserExist: RequestHandler = async (req, res, next) => {
 
 export const hashPassword: RequestHandler = async (req, res, next) => {
   const saltRounds = 10;
-  if (req.body.password)
-    req.body.password = await bcrypt.hash(req.body.password, saltRounds);
+  if (req.body.data?.data?.password)
+    req.body.data.data.password = await bcrypt.hash(
+      req.body.data.data.password,
+      saltRounds
+    );
 
   if (req.body.data?.password)
     req.body.data.password = await bcrypt.hash(
@@ -59,23 +62,16 @@ export const isAdmin: RequestHandler = (req, res, next) => {
 
 const getTokenData = (req: Request): TokenData => {
   const error = new AppError({
-    description: "Authorization headers error",
+    description: "Bad token",
     httpCode: HttpCode.BAD_REQUEST,
   });
-  // if (!req.headers.authorization) throw error;
-  console.log("cookies", req.cookies);
-  if (!req.cookies?.token)
-    throw new AppError({
-      description: " Bad token",
-      httpCode: HttpCode.BAD_REQUEST,
-    });
-  const token = req.cookies.token;
-  // const token = req.headers.authorization.replace("Bearer ", "");
-  console.log(token);
 
-  const decoded = jwt.verify(token, process.env.TOKEN_SECRET!) as TokenData;
+  if (!req.cookies?.token) error;
 
-  console.log(decoded);
+  const decoded = jwt.verify(
+    req.cookies.token,
+    process.env.TOKEN_SECRET!
+  ) as TokenData;
 
   if (!decoded.id) throw error;
 

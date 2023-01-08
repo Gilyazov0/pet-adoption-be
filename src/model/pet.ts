@@ -1,5 +1,6 @@
-import { PrismaClient, Prisma, Pet } from "@prisma/client";
+import { PrismaClient, Prisma, Pet, Event } from "@prisma/client";
 import SearchParams from "../Types/searchParams";
+import { getNewPetEventsModel } from "./event";
 
 const prisma = new PrismaClient();
 
@@ -43,4 +44,15 @@ export async function searchModel(params: SearchParams) {
         adoptionStatus: status,
       },
     });
+}
+
+export async function getNewPetsModel(userId: number): Promise<(Pet | null)[]> {
+  const events = await getNewPetEventsModel(userId);
+  const promises = [];
+  for (const event of events) {
+    if (event.petId) promises.push(getPetByIdModel(event.petId));
+  }
+  const pets = await Promise.all(promises);
+
+  return pets;
 }

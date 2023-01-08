@@ -28,7 +28,7 @@ export async function getNewsfeedModel(
   return result;
 }
 
-export async function getNewPetsModel(userId: number) {
+export async function getNewPetEventsModel(userId: number) {
   const lastLogin = await prisma.event.findFirst({
     where: { authorId: userId, type: "Login" },
     orderBy: { time: "desc" },
@@ -39,8 +39,8 @@ export async function getNewPetsModel(userId: number) {
 
   console.log(userId, lastLogin.time);
 
-  const newPets = await prisma.event.findMany({
+  const newPetsEvents = await prisma.event.findMany({
     where: { type: "NewPet", time: { gt: lastLogin.time } },
   });
-  return newPets;
+  return newPetsEvents;
 }

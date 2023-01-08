@@ -10,7 +10,6 @@ export default function validateBody(schema: object): RequestHandler {
   return (req, _, next) => {
     const validate = ajv.compile(schema);
     const valid = validate(req.body);
-
     if (valid) return next();
     else {
       console.log(JSON.stringify(validate.errors, null, 2));

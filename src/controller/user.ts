@@ -16,6 +16,7 @@ import TokenData from "../Types/TokenData";
 import { User, AdoptStatus } from "@prisma/client";
 import FullUserData from "../Types/FullUserData";
 import { AddEventModel } from "../model/event";
+import { getNewPetsModel } from "../model/pet";
 
 export default class UserController {
   public static getAllUsers: RequestHandler = async (req, res) => {
@@ -73,16 +74,24 @@ export default class UserController {
 
     res.cookie("token", token, { maxAge: 86000000, httpOnly: true });
 
+    const newPets = await getNewPetsModel(user.id);
+
     AddEventModel({ authorId: user.id, type: "Login" });
 
     res.send({
       user: this.delPassword(user),
-      // , token
+      newPets,
     });
   };
 
   public static update: RequestHandler = async (req, res) => {
-    const user = await updateModel(req.body.data, req.body.tokenData.id);
+    const data = req.body.data;
+    if (req.body.tokenData.id !== data.userId && !req.body.tokenData.isAdmin)
+      throw new AppError({
+        description: "Authorized request",
+        httpCode: HttpCode.UNAUTHORIZED,
+      });
+    const user = await updateModel(data.data, data.userId);
     res.send(this.delPassword(user));
   };
 
