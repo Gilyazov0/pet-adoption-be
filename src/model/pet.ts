@@ -21,6 +21,10 @@ export async function getPetByIdModel(id: number): Promise<Pet | null> {
   const pet = await prisma.pet.findFirst({ where: { id } });
   return pet;
 }
+export async function getPetsByIdsModel(ids: number[]): Promise<Pet[]> {
+  const pet = await prisma.pet.findMany({ where: { id: { in: ids } } });
+  return pet;
+}
 
 export async function searchModel(params: SearchParams) {
   const { name, type, weight, height, status } = { ...params };
@@ -46,13 +50,28 @@ export async function searchModel(params: SearchParams) {
     });
 }
 
-export async function getNewPetsModel(userId: number): Promise<(Pet | null)[]> {
-  const events = await EventModel.getNewPetEvents(userId);
-  const promises = [];
-  for (const event of events) {
-    if (event.petId) promises.push(getPetByIdModel(event.petId));
-  }
-  const pets = await Promise.all(promises);
+export async function getNewPetsModel(userId: number) {
+  const newPetsEvents = await EventModel.getNewPetEvents(userId);
 
-  return pets;
+  const ids: number[] = [];
+  for (const event of newPetsEvents) {
+    if (event.petId) ids.push(event.petId);
+  }
+
+  const newPets = await getPetsByIdsModel(ids);
+
+  return newPets;
+}
+
+export async function getNewAvailablePetsModel(userId: number) {
+  const newAvailableEvents = await EventModel.getNewAvailablePetsEvents(userId);
+
+  const ids = new Set<number>();
+  for (const event of newAvailableEvents) {
+    if (event.petId) ids.add(event.petId);
+  }
+
+  const newAvailablePets = await getPetsByIdsModel(Array.from(ids));
+
+  return newAvailablePets.filter((pet) => (pet.adoptionStatus = "Available"));
 }
