@@ -1,13 +1,13 @@
 import { RequestHandler, Request } from "express";
-import { getUserByEmail } from "../model/user";
 import { AppError, HttpCode } from "../exceptions/AppError";
 import "dotenv/config";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import TokenData from "../Types/TokenData";
+import userModel from "../model/userModel";
 
 export const doesUserExist: RequestHandler = async (req, _, next) => {
-  const user = await getUserByEmail(req.body.data.email);
+  const user = await userModel.getUserByEmail(req.body.data.email);
   if (!user) {
     throw new AppError({
       description: "Authorization denied",

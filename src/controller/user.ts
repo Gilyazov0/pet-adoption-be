@@ -3,24 +3,16 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { AppError, HttpCode } from "../exceptions/AppError";
 import "dotenv/config";
-import {
-  createUserModel,
-  changeSaveModel,
-  changeAdoptModel,
-  changeFosterModel,
-  updateModel,
-  getAllUsersModel,
-  getUserByIdModel,
-} from "../model/user";
 import TokenData from "../Types/TokenData";
 import { User, AdoptStatus } from "@prisma/client";
 import FullUserData from "../Types/FullUserData";
 import { EventModel } from "../model/eventModel";
 import { PetModel } from "../model/petModel";
+import UserModel from "../model/userModel";
 
 export default class UserController {
   public static getAllUsers: RequestHandler = async (req, res) => {
-    const users = await getAllUsersModel();
+    const users = await UserModel.getAllUsers();
     for (const user of users) this.delPassword(user);
 
     res.send(users);
@@ -34,7 +26,7 @@ export default class UserController {
         httpCode: HttpCode.BAD_REQUEST,
       });
 
-    const user = await getUserByIdModel(id);
+    const user = await UserModel.getUserById(id);
     if (user) res.send(this.delPassword(user));
     else {
       throw new AppError({
@@ -45,7 +37,7 @@ export default class UserController {
   };
 
   public static createUser: RequestHandler = async (req, res) => {
-    const user = await createUserModel(req.body.data);
+    const user = await UserModel.createUser(req.body.data);
 
     EventModel.AddEvent({ authorId: user.id, type: "NewUser" });
 
@@ -74,8 +66,8 @@ export default class UserController {
 
     res.cookie("token", token, { maxAge: 86000000, httpOnly: true });
 
-    const newPets = await PetModel.getNewPetsModel(user.id);
-    const newAvailablePets = await PetModel.getNewAvailablePetsModel(user.id);
+    const newPets = await PetModel.getNewPets(user.id);
+    const newAvailablePets = await PetModel.getNewAvailablePets(user.id);
 
     EventModel.AddEvent({ authorId: user.id, type: "Login" });
 
@@ -93,20 +85,20 @@ export default class UserController {
         description: "Authorized request",
         httpCode: HttpCode.UNAUTHORIZED,
       });
-    const user = await updateModel(data.data, data.userId);
+    const user = await UserModel.update(data.data, data.userId);
     res.send(this.delPassword(user));
   };
 
   public static changeSave: RequestHandler = async (req, res) => {
     const { petId } = req.body.data as { petId: number };
-    const user = await changeSaveModel(req.body.tokenData.id, petId);
+    const user = await UserModel.changeSave(req.body.tokenData.id, petId);
     res.send(this.delPassword(user));
   };
 
   public static changeAdopt: RequestHandler = async (req, res) => {
     const { petId } = req.body.data as { petId: number };
 
-    const user = await changeAdoptModel(req.body.tokenData.id, petId);
+    const user = await UserModel.changeAdopt(req.body.tokenData.id, petId);
 
     const newStatus: AdoptStatus =
       user.pets.find((pet) => pet.id === petId)?.adoptionStatus || "Available";
@@ -122,7 +114,7 @@ export default class UserController {
 
   public static changeFoster: RequestHandler = async (req, res) => {
     const { petId } = req.body.data as { petId: number };
-    const user = await changeFosterModel(req.body.tokenData.id, petId);
+    const user = await UserModel.changeFoster(req.body.tokenData.id, petId);
 
     const newStatus: AdoptStatus =
       user.pets.find((pet) => pet.id === petId)?.adoptionStatus || "Available";

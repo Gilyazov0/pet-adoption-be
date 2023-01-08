@@ -1,11 +1,10 @@
 import { RequestHandler, Request } from "express";
 import SearchParams from "../Types/searchParams";
-
 import { Prisma, AdoptStatus, Pet } from "@prisma/client";
-import { changeAdoptModel, changeFosterModel } from "../model/user";
 import { AppError, HttpCode } from "../exceptions/AppError";
 import EventModel from "../model/eventModel";
 import { PetModel } from "../model/petModel";
+import UserModel from "../model/userModel";
 
 export default class PetController {
   public static getPetById: RequestHandler = async (req, res) => {
@@ -17,7 +16,7 @@ export default class PetController {
         httpCode: HttpCode.BAD_REQUEST,
       });
 
-    const pet = await PetModel.getPetByIdModel(id);
+    const pet = await PetModel.getPetById(id);
     if (pet) res.send(pet);
     else {
       throw new AppError({
@@ -30,7 +29,7 @@ export default class PetController {
   public static addPet: RequestHandler = async (req, res) => {
     req = this.dataPreparation(req);
 
-    const pet = await PetModel.addPetModel(req.body.data);
+    const pet = await PetModel.addPet(req.body.data);
     EventModel.AddEvent({
       authorId: req.body.tokenData.id,
       type: "NewPet",
@@ -49,7 +48,7 @@ export default class PetController {
     if (!data.picture) delete data.picture;
     delete data.id;
 
-    const prevPet = await PetModel.getPetByIdModel(id);
+    const prevPet = await PetModel.getPetById(id);
 
     let newStatus: AdoptStatus | undefined = undefined;
     if (
@@ -58,14 +57,14 @@ export default class PetController {
     ) {
       newStatus = "Available";
       if (prevPet?.adoptionStatus === "Adopted")
-        changeAdoptModel(prevPet.ownerId!, id);
+        UserModel.changeAdopt(prevPet.ownerId!, id);
 
       if (prevPet?.adoptionStatus === "Fostered")
-        changeFosterModel(prevPet.ownerId!, id);
+        UserModel.changeFoster(prevPet.ownerId!, id);
     }
     delete data.adoptionStatus;
 
-    const pet = await PetModel.updatePetModel(req.body.data, id);
+    const pet = await PetModel.updatePet(req.body.data, id);
 
     const event: Prisma.EventUncheckedCreateInput = {
       authorId: req.body.tokenData.id,
@@ -85,7 +84,7 @@ export default class PetController {
       weight: Number(req.query.weight),
       height: Number(req.query.height),
     };
-    const pets = await PetModel.searchModel(params);
+    const pets = await PetModel.search(params);
     res.send(pets);
   };
 

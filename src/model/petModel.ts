@@ -6,13 +6,13 @@ export class PetModel {
   private static prisma = new PrismaClient();
   private static petModel = this.prisma.pet;
 
-  public static async addPetModel(pet: Prisma.PetCreateInput) {
+  public static async addPet(pet: Prisma.PetCreateInput) {
     const result = await this.petModel.create({ data: pet });
 
     return result;
   }
 
-  public static async updatePetModel(pet: Prisma.PetUpdateInput, id: number) {
+  public static async updatePet(pet: Prisma.PetUpdateInput, id: number) {
     const result = await this.petModel.update({
       where: { id },
       data: { ...pet },
@@ -20,16 +20,16 @@ export class PetModel {
     return result;
   }
 
-  public static async getPetByIdModel(id: number): Promise<Pet | null> {
+  public static async getPetById(id: number): Promise<Pet | null> {
     const pet = await this.petModel.findFirst({ where: { id } });
     return pet;
   }
-  public static async getPetsByIdsModel(ids: number[]): Promise<Pet[]> {
+  public static async getPetsByIds(ids: number[]): Promise<Pet[]> {
     const pet = await this.petModel.findMany({ where: { id: { in: ids } } });
     return pet;
   }
 
-  public static async searchModel(params: SearchParams) {
+  public static async search(params: SearchParams) {
     const { name, type, weight, height, status } = { ...params };
 
     if (name)
@@ -53,7 +53,7 @@ export class PetModel {
       });
   }
 
-  public static async getNewPetsModel(userId: number) {
+  public static async getNewPets(userId: number) {
     const newPetsEvents = await EventModel.getNewPetEvents(userId);
 
     const ids: number[] = [];
@@ -61,12 +61,12 @@ export class PetModel {
       if (event.petId) ids.push(event.petId);
     }
 
-    const newPets = await this.getPetsByIdsModel(ids);
+    const newPets = await this.getPetsByIds(ids);
 
     return newPets;
   }
 
-  public static async getNewAvailablePetsModel(userId: number) {
+  public static async getNewAvailablePets(userId: number) {
     const newAvailableEvents = await EventModel.getNewAvailablePetsEvents(
       userId
     );
@@ -76,8 +76,10 @@ export class PetModel {
       if (event.petId) ids.add(event.petId);
     }
 
-    const newAvailablePets = await this.getPetsByIdsModel(Array.from(ids));
+    const newAvailablePets = await this.getPetsByIds(Array.from(ids));
 
-    return newAvailablePets.filter((pet) => (pet.adoptionStatus = "Available"));
+    return newAvailablePets.filter((pet) => pet.adoptionStatus === "Available");
   }
 }
+
+export default PetModel;
