@@ -1,7 +1,6 @@
 import { RequestHandler } from "express";
-import EventModel from "../model/event";
+import EventModel from "../model/eventModel";
 import UserController from "./user";
-import { getNewPetsModel, getPetByIdModel } from "../model/pet";
 
 export default class EventsController {
   public static getNewsfeed: RequestHandler = async (req, res) => {

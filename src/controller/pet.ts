@@ -1,15 +1,11 @@
 import { RequestHandler, Request } from "express";
 import SearchParams from "../Types/searchParams";
-import {
-  getPetByIdModel,
-  searchModel,
-  addPetModel,
-  updatePetModel,
-} from "../model/pet";
+
 import { Prisma, AdoptStatus, Pet } from "@prisma/client";
 import { changeAdoptModel, changeFosterModel } from "../model/user";
 import { AppError, HttpCode } from "../exceptions/AppError";
-import EventModel from "../model/event";
+import EventModel from "../model/eventModel";
+import { PetModel } from "../model/petModel";
 
 export default class PetController {
   public static getPetById: RequestHandler = async (req, res) => {
@@ -21,7 +17,7 @@ export default class PetController {
         httpCode: HttpCode.BAD_REQUEST,
       });
 
-    const pet = await getPetByIdModel(id);
+    const pet = await PetModel.getPetByIdModel(id);
     if (pet) res.send(pet);
     else {
       throw new AppError({
@@ -34,7 +30,7 @@ export default class PetController {
   public static addPet: RequestHandler = async (req, res) => {
     req = this.dataPreparation(req);
 
-    const pet = await addPetModel(req.body.data);
+    const pet = await PetModel.addPetModel(req.body.data);
     EventModel.AddEvent({
       authorId: req.body.tokenData.id,
       type: "NewPet",
@@ -53,7 +49,7 @@ export default class PetController {
     if (!data.picture) delete data.picture;
     delete data.id;
 
-    const prevPet = await getPetByIdModel(id);
+    const prevPet = await PetModel.getPetByIdModel(id);
 
     let newStatus: AdoptStatus | undefined = undefined;
     if (
@@ -69,7 +65,7 @@ export default class PetController {
     }
     delete data.adoptionStatus;
 
-    const pet = await updatePetModel(req.body.data, id);
+    const pet = await PetModel.updatePetModel(req.body.data, id);
 
     const event: Prisma.EventUncheckedCreateInput = {
       authorId: req.body.tokenData.id,
@@ -89,7 +85,7 @@ export default class PetController {
       weight: Number(req.query.weight),
       height: Number(req.query.height),
     };
-    const pets = await searchModel(params);
+    const pets = await PetModel.searchModel(params);
     res.send(pets);
   };
 

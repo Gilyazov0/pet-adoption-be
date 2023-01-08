@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import TokenData from "../Types/TokenData";
 
-export const doesUserExist: RequestHandler = async (req, res, next) => {
+export const doesUserExist: RequestHandler = async (req, _, next) => {
   const user = await getUserByEmail(req.body.data.email);
   if (!user) {
     throw new AppError({
@@ -20,7 +20,7 @@ export const doesUserExist: RequestHandler = async (req, res, next) => {
   next();
 };
 
-export const hashPassword: RequestHandler = async (req, res, next) => {
+export const hashPassword: RequestHandler = async (req, _, next) => {
   const saltRounds = 10;
   if (req.body.data?.data?.password)
     req.body.data.data.password = await bcrypt.hash(
@@ -37,7 +37,7 @@ export const hashPassword: RequestHandler = async (req, res, next) => {
   next();
 };
 
-export const auth: RequestHandler = (req, res, next) => {
+export const auth: RequestHandler = (req, _, next) => {
   const tokenData = getTokenData(req);
   if (!tokenData.id)
     throw new AppError({
@@ -48,7 +48,7 @@ export const auth: RequestHandler = (req, res, next) => {
   next();
 };
 
-export const isAdmin: RequestHandler = (req, res, next) => {
+export const isAdmin: RequestHandler = (req, _, next) => {
   const tokenData = getTokenData(req);
   if (!tokenData.isAdmin)
     throw new AppError({

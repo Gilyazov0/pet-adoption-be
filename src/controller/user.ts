@@ -15,8 +15,8 @@ import {
 import TokenData from "../Types/TokenData";
 import { User, AdoptStatus } from "@prisma/client";
 import FullUserData from "../Types/FullUserData";
-import { getNewAvailablePetsModel, getNewPetsModel } from "../model/pet";
-import { EventModel } from "../model/event";
+import { EventModel } from "../model/eventModel";
+import { PetModel } from "../model/petModel";
 
 export default class UserController {
   public static getAllUsers: RequestHandler = async (req, res) => {
@@ -74,10 +74,11 @@ export default class UserController {
 
     res.cookie("token", token, { maxAge: 86000000, httpOnly: true });
 
-    const newPets = await getNewPetsModel(user.id);
-    const newAvailablePets = await getNewAvailablePetsModel(user.id);
+    const newPets = await PetModel.getNewPetsModel(user.id);
+    const newAvailablePets = await PetModel.getNewAvailablePetsModel(user.id);
 
     EventModel.AddEvent({ authorId: user.id, type: "Login" });
+
     res.send({
       user: this.delPassword(user),
       newPets,

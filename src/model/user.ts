@@ -1,7 +1,7 @@
-import { getPetByIdModel } from "./pet";
 import { PrismaClient, Prisma, AdoptStatus, User } from "@prisma/client";
 import { AppError, HttpCode } from "../exceptions/AppError";
 import FullUserData from "../Types/FullUserData";
+import { PetModel } from "./petModel";
 
 const prisma = new PrismaClient();
 
@@ -52,7 +52,7 @@ export async function updateModel(data: object, userId: number): Promise<User> {
 async function getPetAndUserById(userId: number, petId: number) {
   const [user, pet] = await Promise.all([
     getUserByIdModel(userId),
-    getPetByIdModel(petId),
+    PetModel.getPetByIdModel(petId),
   ]);
 
   if (!user)
