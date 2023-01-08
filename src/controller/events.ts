@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { getNewsfeedModel } from "../model/event";
+import EventModel from "../model/event";
 import UserController from "./user";
 import { getNewPetsModel, getPetByIdModel } from "../model/pet";
 
@@ -13,7 +13,7 @@ export default class EventsController {
       start = new Date(startDate as string);
       end = new Date(endDate as string);
     }
-    let result = await getNewsfeedModel(start, end);
+    let result = await EventModel.getNewsfeed(start, end);
 
     for (let event of result) {
       UserController.delPassword(event.author);

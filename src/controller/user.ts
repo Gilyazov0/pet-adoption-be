@@ -1,4 +1,4 @@
-import { query, RequestHandler } from "express";
+import { RequestHandler } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { AppError, HttpCode } from "../exceptions/AppError";
@@ -15,8 +15,8 @@ import {
 import TokenData from "../Types/TokenData";
 import { User, AdoptStatus } from "@prisma/client";
 import FullUserData from "../Types/FullUserData";
-import { AddEventModel } from "../model/event";
 import { getNewPetsModel } from "../model/pet";
+import { EventModel } from "../model/event";
 
 export default class UserController {
   public static getAllUsers: RequestHandler = async (req, res) => {
@@ -47,7 +47,7 @@ export default class UserController {
   public static createUser: RequestHandler = async (req, res) => {
     const user = await createUserModel(req.body.data);
 
-    AddEventModel({ authorId: user.id, type: "NewUser" });
+    EventModel.AddEvent({ authorId: user.id, type: "NewUser" });
 
     res.send(this.delPassword(user));
   };
@@ -76,7 +76,7 @@ export default class UserController {
 
     const newPets = await getNewPetsModel(user.id);
 
-    AddEventModel({ authorId: user.id, type: "Login" });
+    EventModel.AddEvent({ authorId: user.id, type: "Login" });
 
     res.send({
       user: this.delPassword(user),
@@ -109,7 +109,7 @@ export default class UserController {
     const newStatus: AdoptStatus =
       user.pets.find((pet) => pet.id === petId)?.adoptionStatus || "Available";
 
-    AddEventModel({
+    EventModel.AddEvent({
       authorId: req.body.tokenData.id,
       type: "NewPetStatus",
       petId: petId,
@@ -124,9 +124,8 @@ export default class UserController {
 
     const newStatus: AdoptStatus =
       user.pets.find((pet) => pet.id === petId)?.adoptionStatus || "Available";
-    console.log(user.pets, newStatus, petId);
 
-    AddEventModel({
+    EventModel.AddEvent({
       authorId: req.body.tokenData.id,
       type: "NewPetStatus",
       petId: petId,

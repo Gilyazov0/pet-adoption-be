@@ -6,10 +6,10 @@ import {
   addPetModel,
   updatePetModel,
 } from "../model/pet";
-import { AddEventModel } from "../model/event";
 import { Prisma, AdoptStatus, Pet } from "@prisma/client";
 import { changeAdoptModel, changeFosterModel } from "../model/user";
 import { AppError, HttpCode } from "../exceptions/AppError";
+import EventModel from "../model/event";
 
 export default class PetController {
   public static getPetById: RequestHandler = async (req, res) => {
@@ -35,7 +35,7 @@ export default class PetController {
     req = this.dataPreparation(req);
 
     const pet = await addPetModel(req.body.data);
-    AddEventModel({
+    EventModel.AddEvent({
       authorId: req.body.tokenData.id,
       type: "NewPet",
       newStatus: pet.adoptionStatus,
@@ -78,7 +78,7 @@ export default class PetController {
     };
     if (newStatus) event.newStatus;
 
-    AddEventModel(event);
+    EventModel.AddEvent(event);
 
     res.send(pet);
   };
@@ -94,12 +94,15 @@ export default class PetController {
   };
 
   private static dataPreparation(req: Request) {
-    console.log("in dataPreparation", req.body.tokenData);
-
     const data = req.body.data;
-    data.picture! = req.file ? req.file.path : data.picture;
-    data.height! = Number(data.height);
-    data.weight! = Number(data.weight);
+    if (!data)
+      throw new AppError({
+        description: "Bad request body",
+        httpCode: HttpCode.BAD_REQUEST,
+      });
+    data.picture = req.file ? req.file.path : data.picture;
+    data.height = Number(data.height);
+    data.weight = Number(data.weight);
     if (data.ownerId) data.ownerId! = Number(data.ownerId);
     data.hypoallergenic! = Boolean(data.hypoallergenic);
     return req;
