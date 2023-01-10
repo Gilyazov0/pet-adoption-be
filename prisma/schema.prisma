@@ -19,6 +19,7 @@ model User {
   pets      Pet[]   @relation("OwnedPets")
   savedPets Pet[]   @relation("SavedPets")
   events    Event[]
+  Chat      Chat[]
 
   @@map("users")
 }
@@ -56,6 +57,15 @@ model Event {
   newStatus AdoptStatus?
 
   @@map("events")
+}
+
+model Chat {
+  id       Int      @id @default(autoincrement())
+  time     DateTime @default(now())
+  chatId   Int      @map("chat_id")
+  authorId Int      @map("author_id")
+  author   User     @relation(fields: [authorId], references: [id])
+  message  String
 }
 
 enum EventType {

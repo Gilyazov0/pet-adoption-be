@@ -1,6 +1,8 @@
 import { IncomingMessage, Server } from "http";
 import WebSocket from "ws";
 import querystring from "node:querystring";
+import ChatModel from "./model/chatModel";
+import { Chat } from "@prisma/client";
 
 type Connection = { ws: WebSocket.WebSocket; userId: string; chatId: string };
 
@@ -46,6 +48,8 @@ export default class WebsocketServer {
     wsConnection.on("message", (message) => {
       const { msg, chatId, userId, name } = JSON.parse(message.toString());
 
+      this.StoreMessage(chatId, userId, msg);
+
       this.connections.forEach((connection) => {
         if (chatId === connection.chatId && userId !== connection.userId) {
           connection.ws.send(
@@ -58,6 +62,11 @@ export default class WebsocketServer {
         }
       });
     });
+  }
+
+  private StoreMessage(chatId: number, authorId: number, message: string) {
+    const data = { authorId: +authorId, chatId: +chatId, message };
+    ChatModel.addMessage(data);
   }
 
   private addConnection(newConnection: Connection) {

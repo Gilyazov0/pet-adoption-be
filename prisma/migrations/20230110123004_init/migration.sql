@@ -45,6 +45,17 @@ CREATE TABLE `events` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `Chat` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `time` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `chat_id` INTEGER NOT NULL,
+    `author_id` INTEGER NOT NULL,
+    `message` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `_SavedPets` (
     `A` INTEGER NOT NULL,
     `B` INTEGER NOT NULL,
@@ -61,6 +72,9 @@ ALTER TABLE `events` ADD CONSTRAINT `events_author_id_fkey` FOREIGN KEY (`author
 
 -- AddForeignKey
 ALTER TABLE `events` ADD CONSTRAINT `events_pet_id_fkey` FOREIGN KEY (`pet_id`) REFERENCES `pets`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Chat` ADD CONSTRAINT `Chat_author_id_fkey` FOREIGN KEY (`author_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_SavedPets` ADD CONSTRAINT `_SavedPets_A_fkey` FOREIGN KEY (`A`) REFERENCES `pets`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
