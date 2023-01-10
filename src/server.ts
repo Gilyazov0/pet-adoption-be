@@ -1,4 +1,3 @@
-import "./process";
 import "express-async-errors";
 import express, { Request } from "express";
 import "dotenv/config";
@@ -10,7 +9,8 @@ import handleError from "./middleware/handleError";
 import { RequestHandler } from "express";
 import { AppError, HttpCode } from "./exceptions/AppError";
 import cookieParser from "cookie-parser";
-
+import { Server } from "http";
+import websocketServer from "./websocket";
 const port = process.env.PORT || 8080;
 
 const app = express();
@@ -34,6 +34,8 @@ app.use("*", (_, __): RequestHandler => {
 
 app.use(handleError);
 
-app.listen(port, () => {
+const server: Server = app.listen(port, () => {
   console.log(`Server started. Listening to the post ${port}`);
 });
+
+websocketServer(server);
