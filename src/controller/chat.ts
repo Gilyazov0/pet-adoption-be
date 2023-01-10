@@ -6,6 +6,13 @@ import { AppError, HttpCode } from "../exceptions/AppError";
 type ChatMsg = { msg: string; authorId: number; name: string; time: Date };
 
 export default class ChatController {
+  public static delChat: RequestHandler = async (req, res) => {
+    const result = await ChatModel.delChat(req.body.data.chatId);
+    console.log(result);
+
+    res.send({ ok: true });
+  };
+
   public static getAllChats: RequestHandler = async (req, res) => {
     const messages = await ChatModel.getAllMessages();
     const chats: { [key: number]: ChatMsg[] } = {};

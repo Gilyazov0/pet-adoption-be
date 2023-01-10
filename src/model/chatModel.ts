@@ -1,4 +1,5 @@
 import { PrismaClient, Prisma } from "@prisma/client";
+import chatId from "../Schemas/chatId";
 export type RawMsgData = {
   message: string;
   time: Date;
@@ -13,6 +14,9 @@ export default class ChatModel {
   private static prisma = new PrismaClient();
   private static chatModel = this.prisma.chat;
 
+  public static async delChat(chatId: number) {
+    return await this.chatModel.deleteMany({ where: { chatId } });
+  }
   public static async addMessage(msg: Prisma.ChatUncheckedCreateInput) {
     return await this.chatModel.create({ data: msg });
   }
