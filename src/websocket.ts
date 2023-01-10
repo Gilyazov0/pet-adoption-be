@@ -1,69 +1,77 @@
-import { Server } from "http";
+import { IncomingMessage, Server } from "http";
 import WebSocket from "ws";
 import querystring from "node:querystring";
 
 type Connection = { ws: WebSocket.WebSocket; userId: string; chatId: string };
 
-let connections: Connection[] = [];
-export default async function websocketServer(expressServer: Server) {
-  const websocketServer = new WebSocket.Server({
-    noServer: true,
-    path: "/websocket",
-  });
+export default class WebsocketServer {
+  private connections: Connection[] = [];
+  private server: WebSocket.Server;
+  private expressServer: Server;
 
-  expressServer.on("upgrade", (request, socket, head) => {
-    websocketServer.handleUpgrade(request, socket, head, (websocket) => {
-      websocketServer.emit("connection", websocket, request);
+  constructor(expressServer: Server) {
+    this.expressServer = expressServer;
+    this.server = new WebSocket.Server({
+      noServer: true,
+      path: "/websocket",
     });
-  });
 
-  websocketServer.on(
-    "connection",
-    function connection(wsConnection, connectionRequest) {
-      const params = querystring.parse(getQueryString(connectionRequest.url!));
+    this.onUpgrade();
+    this.server.on("connection", this.HandleConnection.bind(this));
+  }
 
-      if (
-        typeof params.chatId === "string" &&
-        typeof params.userId === "string"
-      )
-        addConnection({
-          ws: wsConnection,
-          chatId: params.chatId,
-          userId: params.userId,
-        });
-
-      wsConnection.on("message", (message) => {
-        const { msg, chatId, userId, name } = JSON.parse(message.toString());
-
-        connections.forEach((connection) => {
-          if (chatId === connection.chatId && userId !== connection.userId) {
-            connection.ws.send(
-              JSON.stringify({
-                msg,
-                authorId: userId,
-                name,
-              })
-            );
-          }
-        });
+  private onUpgrade() {
+    this.expressServer.on("upgrade", (request, socket, head) => {
+      this.server.handleUpgrade(request, socket, head, (websocket) => {
+        this.server.emit("connection", websocket, request);
       });
-    }
-  );
+    });
+  }
 
-  function addConnection(newConnection: Connection) {
-    connections = connections.filter(
+  private HandleConnection(
+    wsConnection: WebSocket.WebSocket,
+    connectionRequest: IncomingMessage
+  ) {
+    const params = querystring.parse(
+      this.getQueryString(connectionRequest.url!)
+    );
+
+    if (typeof params.chatId === "string" && typeof params.userId === "string")
+      this.addConnection({
+        ws: wsConnection,
+        chatId: params.chatId,
+        userId: params.userId,
+      });
+
+    wsConnection.on("message", (message) => {
+      const { msg, chatId, userId, name } = JSON.parse(message.toString());
+
+      this.connections.forEach((connection) => {
+        if (chatId === connection.chatId && userId !== connection.userId) {
+          connection.ws.send(
+            JSON.stringify({
+              msg,
+              authorId: userId,
+              name,
+            })
+          );
+        }
+      });
+    });
+  }
+
+  private addConnection(newConnection: Connection) {
+    this.connections = this.connections.filter(
       (con) =>
         con.chatId !== newConnection.chatId ||
         con.userId !== newConnection.userId
     );
-    connections.push(newConnection);
+    this.connections.push(newConnection);
   }
 
-  function getQueryString(url: string): string {
+  private getQueryString(url: string): string {
     if (!url) return "";
     const index = url.indexOf("?");
     return index === -1 || index >= url.length ? "" : url.slice(index + 1);
   }
-
-  return websocketServer;
 }

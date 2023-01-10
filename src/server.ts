@@ -11,6 +11,7 @@ import { AppError, HttpCode } from "./exceptions/AppError";
 import cookieParser from "cookie-parser";
 import { Server } from "http";
 import websocketServer from "./websocket";
+import WebsocketServer from "./websocket";
 const port = process.env.PORT || 8080;
 
 const app = express();
@@ -38,4 +39,5 @@ const server: Server = app.listen(port, () => {
   console.log(`Server started. Listening to the post ${port}`);
 });
 
-websocketServer(server);
+const wsServer = new WebsocketServer(server);
+// websocketServer(server);
