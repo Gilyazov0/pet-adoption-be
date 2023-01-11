@@ -36,7 +36,7 @@ export default class ChatModel {
           },
         },
       },
-      orderBy: { time: "desc" },
+      orderBy: { time: "asc" },
     });
   }
 
