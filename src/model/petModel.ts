@@ -30,27 +30,20 @@ export class PetModel {
   }
 
   public static async search(params: SearchParams) {
-    const { name, type, weight, height, status } = { ...params };
+    const { name, type, maxWeight, minWeight, maxHeight, minHeight, status } = {
+      ...params,
+    };
+    if (maxHeight) console.log("sdsd");
 
-    if (name)
-      return await this.petModel.findMany({
-        where: {
-          name: { search: `${name}*` },
-          type,
-          weight: weight ? weight : undefined,
-          height: height ? height : undefined,
-          adoptionStatus: status,
-        },
-      });
-    else
-      return await this.petModel.findMany({
-        where: {
-          type,
-          weight: weight ? weight : undefined,
-          height: height ? height : undefined,
-          adoptionStatus: status,
-        },
-      });
+    return await this.petModel.findMany({
+      where: {
+        ...(type ? { type } : {}),
+        ...(status ? { adoptionStatus: status } : {}),
+        weight: { lte: maxWeight, gte: minWeight },
+        height: { lte: maxHeight, gte: minHeight },
+        ...(name ? { name: { search: `${name}*` } } : {}),
+      },
+    });
   }
 
   public static async getNewPets(userId: number) {

@@ -79,10 +79,21 @@ export default class PetController {
   };
 
   public static search: RequestHandler = async (req, res) => {
+    const data = req.query;
     const params: SearchParams = {
-      ...req.query,
-      weight: Number(req.query.weight),
-      height: Number(req.query.height),
+      ...data,
+      maxWeight: Number(data.maxWeight)
+        ? Number(data.maxWeight)
+        : Number.MAX_VALUE,
+      minWeight: Number(data.minWeight)
+        ? Number(data.minWeight)
+        : Number.MIN_VALUE,
+      maxHeight: Number(data.maxHeight)
+        ? Number(data.maxHeight)
+        : Number.MAX_VALUE,
+      minHeight: Number(data.minHeight)
+        ? Number(data.minHeight)
+        : Number.MIN_VALUE,
     };
     const pets = await PetModel.search(params);
     res.send(pets);

@@ -8,7 +8,6 @@ type ChatMsg = { msg: string; authorId: number; name: string; time: Date };
 export default class ChatController {
   public static delChat: RequestHandler = async (req, res) => {
     const result = await ChatModel.delChat(req.body.data.chatId);
-    console.log(result);
 
     res.send({ ok: true });
   };
