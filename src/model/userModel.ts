@@ -1,10 +1,11 @@
-import { PrismaClient, Prisma, AdoptStatus, User } from "@prisma/client";
+import { Prisma, AdoptStatus, User } from "@prisma/client";
 import { AppError, HttpCode } from "../exceptions/AppError";
+import { prismaClient } from "../server";
 import FullUserData from "../Types/FullUserData";
 import { PetModel } from "./petModel";
 
 class UserModel {
-  static prisma = new PrismaClient();
+  static prisma = prismaClient;
   static userModel = this.prisma.user;
 
   public static async getUserByEmail(

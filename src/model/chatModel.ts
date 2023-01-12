@@ -1,5 +1,6 @@
-import { PrismaClient, Prisma } from "@prisma/client";
-import chatId from "../Schemas/chatId";
+import { Prisma } from "@prisma/client";
+import { prismaClient } from "../server";
+
 export type RawMsgData = {
   message: string;
   time: Date;
@@ -11,7 +12,7 @@ export type RawMsgData = {
   };
 };
 export default class ChatModel {
-  private static prisma = new PrismaClient();
+  private static prisma = prismaClient;
   private static chatModel = this.prisma.chat;
 
   public static async delChat(chatId: number) {

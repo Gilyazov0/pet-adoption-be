@@ -2,7 +2,6 @@ import { IncomingMessage, Server } from "http";
 import WebSocket from "ws";
 import querystring from "node:querystring";
 import ChatModel from "./model/chatModel";
-import { Chat } from "@prisma/client";
 
 type Connection = { ws: WebSocket.WebSocket; userId: string; chatId: string };
 
@@ -22,6 +21,11 @@ export default class WebsocketServer {
     this.server.on("connection", this.HandleConnection.bind(this));
   }
 
+  public disconnect() {
+    for (const connection of this.connections) {
+      connection.ws.close();
+    }
+  }
   private onUpgrade() {
     this.expressServer.on("upgrade", (request, socket, head) => {
       this.server.handleUpgrade(request, socket, head, (websocket) => {

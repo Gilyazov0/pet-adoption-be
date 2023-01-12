@@ -6,6 +6,7 @@ import { Response } from "express";
 import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import { MulterError } from "multer";
 import { AppError, HttpCode } from "./AppError";
+import handleExit from "./exitHandler";
 
 class ErrorHandler {
   public handleError(error: Error | AppError, response?: Response): void {
@@ -36,7 +37,7 @@ class ErrorHandler {
     }
 
     console.log("Application encountered a critical error. Exiting");
-    process.exit(1);
+    handleExit(1);
   }
 
   private isTrustedError(error: Error): boolean {

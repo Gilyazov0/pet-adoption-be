@@ -1,9 +1,10 @@
-import { PrismaClient, Prisma, Pet, Event } from "@prisma/client";
+import { Prisma, Pet, Event } from "@prisma/client";
+import { prismaClient } from "../server";
 import SearchParams from "../Types/searchParams";
 import EventModel from "./eventModel";
 
 export class PetModel {
-  private static prisma = new PrismaClient();
+  private static prisma = prismaClient;
   private static petModel = this.prisma.pet;
 
   public static async addPet(pet: Prisma.PetCreateInput) {

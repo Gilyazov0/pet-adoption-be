@@ -1,7 +1,8 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+import { prismaClient } from "../server";
 
 export class EventModel {
-  private static prisma = new PrismaClient();
+  private static prisma = prismaClient;
   private static eventModel = this.prisma.event;
 
   public static async AddEvent(event: Prisma.EventUncheckedCreateInput) {
