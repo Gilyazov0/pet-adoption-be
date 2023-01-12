@@ -33,7 +33,6 @@ export class PetModel {
     const { name, type, maxWeight, minWeight, maxHeight, minHeight, status } = {
       ...params,
     };
-    if (maxHeight) console.log("sdsd");
 
     return await this.petModel.findMany({
       where: {
