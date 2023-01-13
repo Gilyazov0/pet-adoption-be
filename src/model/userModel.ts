@@ -1,30 +1,28 @@
-import { Prisma, AdoptStatus, User } from "@prisma/client";
+import { Prisma, AdoptStatus, User, PrismaClient } from "@prisma/client";
 import { AppError, HttpCode } from "../exceptions/AppError";
-import { prismaClient } from "../server";
 import FullUserData from "../Types/FullUserData";
 import { PetModel } from "./petModel";
 
 class UserModel {
-  static prisma = prismaClient;
-  static userModel = this.prisma.user;
+  static prisma = new PrismaClient();
 
   public static async getUserByEmail(
     email: string
   ): Promise<FullUserData | null> {
-    return await this.userModel.findFirst({
+    return await this.prisma.user.findFirst({
       where: { email },
       include: { savedPets: true, pets: true },
     });
   }
 
   public static async getAllUsers(): Promise<FullUserData[]> {
-    return await this.userModel.findMany({
+    return await this.prisma.user.findMany({
       include: { savedPets: true, pets: true },
     });
   }
 
   public static async getUserById(id: number): Promise<FullUserData | null> {
-    return await this.userModel.findFirst({
+    return await this.prisma.user.findFirst({
       where: { id },
       include: { savedPets: true, pets: true },
     });
@@ -33,12 +31,12 @@ class UserModel {
   public static async createUser(
     user: Prisma.UserCreateInput
   ): Promise<FullUserData> {
-    const result = await this.userModel.create({ data: user });
+    const result = await this.prisma.user.create({ data: user });
     return { ...result, savedPets: [], pets: [] };
   }
 
   public static async update(data: object, userId: number): Promise<User> {
-    const user = await this.userModel.update({
+    const user = await this.prisma.user.update({
       where: {
         id: userId,
       },
@@ -83,7 +81,7 @@ class UserModel {
 
     const ids = savedPets.map((pet) => ({ id: pet.id }));
 
-    await this.userModel.update({
+    await this.prisma.user.update({
       where: { id: userId },
       data: {
         savedPets: { set: ids },

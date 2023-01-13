@@ -1,12 +1,11 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { prismaClient } from "../server";
 
 export class EventModel {
-  private static prisma = prismaClient;
-  private static eventModel = this.prisma.event;
+  private static prisma = new PrismaClient();
 
   public static async AddEvent(event: Prisma.EventUncheckedCreateInput) {
-    const result = await this.eventModel.create({ data: event });
+    const result = await this.prisma.event.create({ data: event });
     return result;
   }
 
@@ -20,7 +19,7 @@ export class EventModel {
       startDate.setDate(startDate.getDate() - 1);
     }
 
-    const result = await this.eventModel.findMany({
+    const result = await this.prisma.event.findMany({
       where: {
         type: { in: ["NewUser", "NewPet", "PetUpdate", "NewPetStatus"] },
         time: { lt: endDate, gt: startDate },
@@ -36,7 +35,7 @@ export class EventModel {
 
     if (!lastLogin) return [];
 
-    const newPetsEvents = await this.eventModel.findMany({
+    const newPetsEvents = await this.prisma.event.findMany({
       where: { type: "NewPet", time: { gt: lastLogin } },
     });
     return newPetsEvents;
@@ -47,7 +46,7 @@ export class EventModel {
 
     if (!lastLogin) return [];
 
-    const events = await this.eventModel.findMany({
+    const events = await this.prisma.event.findMany({
       where: {
         type: { in: ["PetUpdate", "NewPetStatus"] },
         newStatus: "Available",
@@ -58,7 +57,7 @@ export class EventModel {
   }
 
   private static async getLastLoginDate(userId: number) {
-    const lastLogin = await this.eventModel.findFirst({
+    const lastLogin = await this.prisma.event.findFirst({
       where: { authorId: userId, type: "Login" },
       orderBy: { time: "desc" },
       select: { time: true },

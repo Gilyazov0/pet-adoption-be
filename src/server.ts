@@ -12,9 +12,12 @@ import { AppError, HttpCode } from "./exceptions/AppError";
 import cookieParser from "cookie-parser";
 import { Server } from "http";
 import WebsocketServer from "./websocket";
-import { PrismaClient } from "@prisma/client";
-const port = process.env.PORT || 8080;
+import { PrismaClient, Prisma } from "@prisma/client";
 
+export const prismaClient = new PrismaClient();
+console.log(prismaClient === undefined);
+
+const port = process.env.PORT || 8080;
 const app = express();
 
 app.use(
@@ -42,4 +45,3 @@ export const server: Server = app.listen(port, () => {
 });
 
 export const wsServer = new WebsocketServer(server);
-export const prismaClient = new PrismaClient();

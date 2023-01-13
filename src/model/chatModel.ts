@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { prismaClient } from "../server";
 
 export type RawMsgData = {
@@ -11,19 +11,22 @@ export type RawMsgData = {
     lastName: string;
   };
 };
+
+console.log("Chat module: ", prismaClient === undefined);
+console.trace();
+
 export default class ChatModel {
   private static prisma = prismaClient;
-  private static chatModel = this.prisma.chat;
 
   public static async delChat(chatId: number) {
-    return await this.chatModel.deleteMany({ where: { chatId } });
+    return await this.prisma.chat.deleteMany({ where: { chatId } });
   }
   public static async addMessage(msg: Prisma.ChatUncheckedCreateInput) {
-    return await this.chatModel.create({ data: msg });
+    return await this.prisma.chat.create({ data: msg });
   }
 
   public static async getChatById(chatId: number): Promise<RawMsgData[]> {
-    return await this.chatModel.findMany({
+    return await this.prisma.chat.findMany({
       where: { chatId },
       select: {
         message: true,
@@ -42,7 +45,7 @@ export default class ChatModel {
   }
 
   public static async getAllMessages(): Promise<RawMsgData[]> {
-    return await this.chatModel.findMany({
+    return await this.prisma.chat.findMany({
       select: {
         message: true,
         time: true,
