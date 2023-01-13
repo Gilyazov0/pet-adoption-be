@@ -1,4 +1,5 @@
-import { server, prismaClient, wsServer } from "../server";
+import { server, wsServer } from "../server";
+import PrismaModel from "../model/prismaModel";
 
 export default async function handleExit(
   code: number,
@@ -17,7 +18,7 @@ export default async function handleExit(
       server.close();
     }
 
-    prismaClient.$disconnect();
+    PrismaModel.client.$disconnect();
     console.log("Closing database connection");
 
     wsServer.disconnect();

@@ -1,18 +1,19 @@
 import { Prisma, Pet, Event, PrismaClient } from "@prisma/client";
 import SearchParams from "../Types/searchParams";
 import EventModel from "./eventModel";
+import PrismaModel from "./prismaModel";
 
-export class PetModel {
-  private static prisma = new PrismaClient();
+export class PetModel extends PrismaModel {
+  private static pet = this.client.pet;
 
   public static async addPet(pet: Prisma.PetCreateInput) {
-    const result = await this.prisma.pet.create({ data: pet });
+    const result = await this.pet.create({ data: pet });
 
     return result;
   }
 
   public static async updatePet(pet: Prisma.PetUpdateInput, id: number) {
-    const result = await this.prisma.pet.update({
+    const result = await this.pet.update({
       where: { id },
       data: { ...pet },
     });
@@ -20,11 +21,11 @@ export class PetModel {
   }
 
   public static async getPetById(id: number): Promise<Pet | null> {
-    const pet = await this.prisma.pet.findFirst({ where: { id } });
+    const pet = await this.pet.findFirst({ where: { id } });
     return pet;
   }
   public static async getPetsByIds(ids: number[]): Promise<Pet[]> {
-    const pet = await this.prisma.pet.findMany({ where: { id: { in: ids } } });
+    const pet = await this.pet.findMany({ where: { id: { in: ids } } });
     return pet;
   }
 
@@ -33,7 +34,7 @@ export class PetModel {
       ...params,
     };
 
-    return await this.prisma.pet.findMany({
+    return await this.pet.findMany({
       where: {
         ...(type ? { type } : {}),
         ...(status ? { adoptionStatus: status } : {}),

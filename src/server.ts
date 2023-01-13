@@ -14,9 +14,6 @@ import { Server } from "http";
 import WebsocketServer from "./websocket";
 import { PrismaClient, Prisma } from "@prisma/client";
 
-export const prismaClient = new PrismaClient();
-console.log(prismaClient === undefined);
-
 const port = process.env.PORT || 8080;
 const app = express();
 
