@@ -63,7 +63,6 @@ export default class UserController {
     const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
       expiresIn: "7d",
     });
-    console.log(token, tokenData);
 
     res.cookie("token", token, { maxAge: 86000000, httpOnly: true });
 
