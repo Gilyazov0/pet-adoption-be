@@ -8,7 +8,7 @@ import { MulterError } from "multer";
 import { AppError, HttpCode } from "./AppError";
 import handleExit from "./exitHandler";
 
-export default class ErrorHandler {
+export class ErrorHandler {
   public static handleError(
     error: Error | AppError,
     response?: Response
@@ -72,7 +72,7 @@ export default class ErrorHandler {
     if (
       err instanceof SyntaxError &&
       "status" in err &&
-      err.status! === 400 &&
+      err.status === 400 &&
       "body" in err
     )
       return new AppError({
