@@ -14,7 +14,6 @@ export class ErrorHandler {
     response?: Response
   ): void {
     error = this.handlePrismaError(error);
-    error = this.handleBodyParserError(error);
     error = this.handleJsonWebTokenError(error);
     error = this.handleMulterError(error);
 
@@ -66,20 +65,6 @@ export class ErrorHandler {
       default:
         return err;
     }
-  }
-
-  private static handleBodyParserError(err: Error) {
-    if (
-      err instanceof SyntaxError &&
-      "status" in err &&
-      err.status === 400 &&
-      "body" in err
-    )
-      return new AppError({
-        description: err.message,
-        httpCode: HttpCode.BAD_REQUEST,
-      });
-    else return err;
   }
 
   private static handleJsonWebTokenError(err: any) {
