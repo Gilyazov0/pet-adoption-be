@@ -8,7 +8,9 @@
   },
   "scripts": {
     "build": "npx tsc",
-    "dev": "ts-node-dev ./src/server.ts"
+    "dev": "ts-node-dev ./src/server.ts",
+    "start": "node dist/server.js",
+    "postinstall": "npx tsc" 
   },
   "repository": {
     "type": "git",

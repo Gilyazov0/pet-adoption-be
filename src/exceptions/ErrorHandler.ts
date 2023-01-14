@@ -68,11 +68,11 @@ export default class ErrorHandler {
     }
   }
 
-  private static handleBodyParserError(err: any) {
+  private static handleBodyParserError(err: Error) {
     if (
       err instanceof SyntaxError &&
       "status" in err &&
-      err.status === 400 &&
+      err.status! === 400 &&
       "body" in err
     )
       return new AppError({
