@@ -17,7 +17,7 @@ const handleError_1 = __importDefault(require("./middleware/handleError"));
 const AppError_1 = require("./exceptions/AppError");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const websocket_1 = __importDefault(require("./websocket"));
-require("./src/process");
+require("./process");
 const port = process.env.PORT || 8080;
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({ origin: ["http://localhost:5173"], credentials: true }));

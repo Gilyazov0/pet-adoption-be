@@ -13,7 +13,7 @@ import { AppError, HttpCode } from "./exceptions/AppError";
 import cookieParser from "cookie-parser";
 import { Server } from "http";
 import WebsocketServer from "./websocket";
-import "./src/process";
+import "./process";
 
 const port = process.env.PORT || 8080;
 const app = express();
