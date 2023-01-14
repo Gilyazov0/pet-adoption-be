@@ -8,8 +8,11 @@ import { MulterError } from "multer";
 import { AppError, HttpCode } from "./AppError";
 import handleExit from "./exitHandler";
 
-class ErrorHandler {
-  public handleError(error: Error | AppError, response?: Response): void {
+export default class ErrorHandler {
+  public static handleError(
+    error: Error | AppError,
+    response?: Response
+  ): void {
     error = this.handlePrismaError(error);
     error = this.handleBodyParserError(error);
     error = this.handleJsonWebTokenError(error);
@@ -22,11 +25,11 @@ class ErrorHandler {
     }
   }
 
-  private handleTrustedError(error: AppError, response: Response): void {
+  private static handleTrustedError(error: AppError, response: Response): void {
     response.status(error.httpCode).json({ message: error.message });
   }
 
-  private handleCriticalError(
+  private static handleCriticalError(
     error: Error | AppError,
     response?: Response
   ): void {
@@ -40,14 +43,14 @@ class ErrorHandler {
     handleExit(1);
   }
 
-  private isTrustedError(error: Error): boolean {
+  private static isTrustedError(error: Error): boolean {
     if (error instanceof AppError) {
       return error.isOperational;
     }
     return false;
   }
 
-  private handlePrismaError(err: Error) {
+  private static handlePrismaError(err: Error) {
     switch (err.constructor) {
       case PrismaClientRustPanicError:
         return new AppError({
@@ -65,7 +68,7 @@ class ErrorHandler {
     }
   }
 
-  private handleBodyParserError(err: any) {
+  private static handleBodyParserError(err: any) {
     if (
       err instanceof SyntaxError &&
       "status" in err &&
@@ -79,7 +82,7 @@ class ErrorHandler {
     else return err;
   }
 
-  private handleJsonWebTokenError(err: any) {
+  private static handleJsonWebTokenError(err: any) {
     if (err instanceof TokenExpiredError) {
       return new AppError({
         description: "Token expired",
@@ -95,7 +98,7 @@ class ErrorHandler {
     return err;
   }
 
-  private handleMulterError(err: any) {
+  private static handleMulterError(err: any) {
     if (err instanceof MulterError && err.code === "LIMIT_UNEXPECTED_FILE") {
       return new AppError({
         description: "Bad file",
@@ -105,6 +108,3 @@ class ErrorHandler {
     return err;
   }
 }
-
-const errorHandler = new ErrorHandler();
-export default errorHandler;
