@@ -1,5 +1,4 @@
-import { ErrorHandler } from "./exceptions/errorHandler";
-
+import { ErrorHandler } from "./exceptions/errorhandler";
 process.on("unhandledRejection", (reason: Error | any) => {
   console.log(`Unhandled Rejection: ${reason.message || reason}`);
 
