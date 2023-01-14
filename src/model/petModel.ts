@@ -24,6 +24,7 @@ export class PetModel extends PrismaModel {
     const pet = await this.pet.findFirst({ where: { id } });
     return pet;
   }
+  
   public static async getPetsByIds(ids: number[]): Promise<Pet[]> {
     const pet = await this.pet.findMany({ where: { id: { in: ids } } });
     return pet;

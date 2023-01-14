@@ -56,6 +56,28 @@ CREATE TABLE `Chat` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `issues` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `time` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `title` VARCHAR(191) NOT NULL,
+    `text` MEDIUMTEXT NOT NULL,
+    `author_id` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `comments` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `time` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `text` MEDIUMTEXT NOT NULL,
+    `author_id` INTEGER NOT NULL,
+    `issue_id` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `_SavedPets` (
     `A` INTEGER NOT NULL,
     `B` INTEGER NOT NULL,
@@ -75,6 +97,15 @@ ALTER TABLE `events` ADD CONSTRAINT `events_pet_id_fkey` FOREIGN KEY (`pet_id`) 
 
 -- AddForeignKey
 ALTER TABLE `Chat` ADD CONSTRAINT `Chat_author_id_fkey` FOREIGN KEY (`author_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `issues` ADD CONSTRAINT `issues_author_id_fkey` FOREIGN KEY (`author_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `comments` ADD CONSTRAINT `comments_author_id_fkey` FOREIGN KEY (`author_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `comments` ADD CONSTRAINT `comments_issue_id_fkey` FOREIGN KEY (`issue_id`) REFERENCES `issues`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_SavedPets` ADD CONSTRAINT `_SavedPets_A_fkey` FOREIGN KEY (`A`) REFERENCES `pets`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

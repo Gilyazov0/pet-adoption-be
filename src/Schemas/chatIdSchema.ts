@@ -1,4 +1,4 @@
-const chatId = {
+const chatIdSchema = {
   type: "object",
   properties: {
     data: {
@@ -12,4 +12,4 @@ const chatId = {
   required: ["data"],
 };
 
-export default chatId;
+export default chatIdSchema;

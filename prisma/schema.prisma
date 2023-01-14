@@ -9,17 +9,19 @@ datasource db {
 }
 
 model User {
-  id        Int     @id @default(autoincrement())
-  firstName String  @map("first_name")
-  lastName  String  @map("last_name")
-  email     String  @unique
+  id        Int       @id @default(autoincrement())
+  firstName String    @map("first_name")
+  lastName  String    @map("last_name")
+  email     String    @unique
   phone     String
   password  String
-  isAdmin   Boolean @default(false) @map("is_admin")
-  pets      Pet[]   @relation("OwnedPets")
-  savedPets Pet[]   @relation("SavedPets")
+  isAdmin   Boolean   @default(false) @map("is_admin")
+  pets      Pet[]     @relation("OwnedPets")
+  savedPets Pet[]     @relation("SavedPets")
   events    Event[]
   Chat      Chat[]
+  Issue     Issue[]
+  Comment   Comment[]
 
   @@map("users")
 }
@@ -66,6 +68,30 @@ model Chat {
   authorId Int      @map("author_id")
   author   User     @relation(fields: [authorId], references: [id])
   message  String
+}
+
+model Issue {
+  id       Int       @id @default(autoincrement())
+  time     DateTime  @default(now())
+  title    String
+  text     String    @db.MediumText
+  authorId Int       @map("author_id")
+  author   User      @relation(fields: [authorId], references: [id])
+  comments Comment[]
+
+  @@map("issues")
+}
+
+model Comment {
+  id       Int      @id @default(autoincrement())
+  time     DateTime @default(now())
+  text     String   @db.MediumText
+  authorId Int      @map("author_id")
+  author   User     @relation(fields: [authorId], references: [id])
+  issueId  Int      @map("issue_id")
+  issue    Issue    @relation(fields: [issueId], references: [id])
+
+  @@map("comments")
 }
 
 enum EventType {

@@ -1,6 +1,5 @@
 import { RequestHandler } from "express";
 import ChatModel, { RawMsgData } from "../model/chatModel";
-import { isAdmin } from "../middleware/userMiddleware";
 import { AppError, HttpCode } from "../exceptions/AppError";
 
 type ChatMsg = { msg: string; authorId: number; name: string; time: Date };
@@ -9,7 +8,7 @@ export default class ChatController {
   public static delChat: RequestHandler = async (req, res) => {
     const result = await ChatModel.delChat(req.body.data.chatId);
 
-    res.send({ ok: true });
+    res.send(true);
   };
 
   public static getAllChats: RequestHandler = async (req, res) => {
