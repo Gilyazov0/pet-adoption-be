@@ -8,7 +8,7 @@ import { MulterError } from "multer";
 import { AppError, HttpCode } from "./AppError";
 import handleExit from "./exitHandler";
 
-export default class test {
+export default class ErrorHandler {
   public static test(error: Error | AppError, response?: Response): void {
     // error = this.handlePrismaError(error);
     // error = this.handleJsonWebTokenError(error);
