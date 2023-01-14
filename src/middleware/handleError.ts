@@ -1,10 +1,10 @@
 import { ErrorRequestHandler } from "express";
-import ErrorHandler from "../exceptions/errorHandler";
+import test from "../exceptions/test";
 
 const handleError: ErrorRequestHandler = (err, _, res, __) => {
   console.log(err);
 
-  ErrorHandler.handleError(err, res);
+  test.test(err, res);
 };
 
 export default handleError;
