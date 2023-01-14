@@ -19,7 +19,10 @@ const port = process.env.PORT || 8080;
 const app = express();
 
 app.use(
-  cors<Request>({ origin: ["http://localhost:5173"], credentials: true })
+  cors<Request>({
+    origin: [process.env.FE_URL || "http://localhost:5173"],
+    credentials: true,
+  })
 );
 app.use(cookieParser());
 app.use(express.json());
