@@ -3,10 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-  "engines": {
-    "node": "17.8"
-  },
-  
+ 
   "scripts": {
     "build": "npx tsc",
     "dev": "ts-node-dev ./src/server.ts",
