@@ -75,7 +75,7 @@ export default class ErrorHandler {
     }
     if (err instanceof JsonWebTokenError) {
       return new AppError({
-        description: "Bad token",
+        description: "JWT: Bad token",
         httpCode: HttpCode.BAD_REQUEST,
       });
     }
