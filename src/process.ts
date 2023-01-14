@@ -1,4 +1,5 @@
-// import ErrorHandler from "./exceptions/errorHandler";
+import ErrorHandler from "./exceptions/ErrorHandler";
+
 process.on("unhandledRejection", (reason: Error | any) => {
   console.log(`Unhandled Rejection: ${reason.message || reason}`);
 
@@ -9,5 +10,5 @@ process.on("uncaughtException", (error: Error) => {
   console.log(`Uncaught Exception: ${error.message}`);
   if (error.stack) console.log(error.stack);
 
-  // ErrorHandler.handleError(error);
+  ErrorHandler.handleError(error);
 });
