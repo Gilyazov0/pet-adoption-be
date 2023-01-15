@@ -64,7 +64,13 @@ export default class UserController {
       expiresIn: "7d",
     });
 
-    res.cookie("token", token, { maxAge: 86000000, httpOnly: true });
+    res.cookie("token", token, {
+      maxAge: 86000000,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production" ? true : false,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
+    console.log(process.env.NODE_ENV);
 
     const newPets = await PetModel.getNewPets(user.id);
     const newAvailablePets = await PetModel.getNewAvailablePets(user.id);
