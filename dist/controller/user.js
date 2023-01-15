@@ -58,7 +58,7 @@ UserController.login = async (req, res) => {
         });
     const tokenData = { id: user.id, isAdmin: user.isAdmin };
     const token = jsonwebtoken_1.default.sign(tokenData, process.env.TOKEN_SECRET, {
-        expiresIn: "1d",
+        expiresIn: "7d",
     });
     res.cookie("token", token, { maxAge: 86000000, httpOnly: true });
     const newPets = await petModel_1.PetModel.getNewPets(user.id);

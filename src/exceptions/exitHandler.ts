@@ -1,4 +1,4 @@
-import { server, wsServer } from "../server";
+import { server, wsServer } from "..";
 import PrismaModel from "../model/prismaModel";
 
 export default async function handleExit(

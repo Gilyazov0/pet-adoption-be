@@ -24,6 +24,8 @@ export default class ErrorHandler {
   }
 
   private static handleTrustedError(error: AppError, response: Response): void {
+    console.log(error);
+
     response.status(error.httpCode).json({ message: error.message });
   }
 
@@ -31,6 +33,7 @@ export default class ErrorHandler {
     error: Error | AppError,
     response?: Response
   ): void {
+    console.log(error);
     if (response) {
       response
         .status(HttpCode.INTERNAL_SERVER_ERROR)
